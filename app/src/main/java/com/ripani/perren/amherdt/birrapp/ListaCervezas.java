@@ -53,11 +53,11 @@ public class ListaCervezas extends AppCompatActivity {
         listaProductos.setAdapter(adapterProductos);
         this.aceptar.setOnClickListener(listenerBtnAceptar);
 
-        if (this.getIntent().getStringExtra("requestCode").equals("2")) {
+        /*if (this.getIntent().getStringExtra("requestCode").equals("2")) {
             aceptar.setVisibility(View.INVISIBLE);
             tvCantidad.setVisibility(View.INVISIBLE);
             edtCantidad.setVisibility(View.INVISIBLE);
-        }
+        }*/
 
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
