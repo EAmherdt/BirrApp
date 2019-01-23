@@ -57,6 +57,7 @@ public class ListaCervezas extends AppCompatActivity {
             aceptar.setVisibility(View.INVISIBLE);
             tvCantidad.setVisibility(View.INVISIBLE);
             edtCantidad.setVisibility(View.INVISIBLE);
+            
         }*/
 
 
