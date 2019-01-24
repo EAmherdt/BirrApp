@@ -1,20 +1,22 @@
 package com.ripani.perren.amherdt.birrapp.modelo;
 
+import java.util.Objects;
+
 public class Cerveza {
 
     private Integer id;
     private String marca;
-    private Estilo tipo; //ipa, apa
-    private Double ibu; // amargor
-    private Double abv; // alcohol
+    private Estilo estilo; //ipa, apa
 
 
-    public Cerveza(Integer id, String marca, Estilo tipo, Double ibu, Double abv) {
+
+    public Cerveza(Integer id, String marca, Estilo tipo) {
         this.id = id;
-        this.tipo = tipo;
+        this.estilo = tipo;
         this.marca = marca;
-        this.ibu = ibu;
-        this.abv = abv;
+    }
+
+    public Cerveza() {
     }
 
     public Integer getId() {
@@ -34,29 +36,19 @@ public class Cerveza {
         this.marca = marca;
     }
 
-    public Estilo getTipo() {
-        return tipo;
+    public Estilo getEstilo() {
+        return estilo;
     }
 
-    public void setTipo(Estilo tipo) {
-        this.tipo = tipo;
+    public void setEstilo(Estilo tipo) {
+        this.estilo = tipo;
     }
 
-    public Double getIbu() {
-        return ibu;
-    }
 
-    public void setIbu(Double ibu) {
-        this.ibu = ibu;
-    }
+    @Override
+    public String toString() {
+        return marca+ "( $" + estilo +")";
 
-    public Double getAbv() {
-        return abv;
     }
-
-    public void setAbv(Double abv) {
-        this.abv = abv;
-    }
-
 
 }

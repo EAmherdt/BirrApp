@@ -17,40 +17,46 @@ import android.widget.Toast;
 
 import com.ripani.perren.amherdt.birrapp.dao.CervezaRepositorio;
 import com.ripani.perren.amherdt.birrapp.modelo.Cerveza;
+import com.ripani.perren.amherdt.birrapp.modelo.CervezaRest;
 import com.ripani.perren.amherdt.birrapp.modelo.Estilo;
+import com.ripani.perren.amherdt.birrapp.modelo.EstiloRest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ListaCervezas extends AppCompatActivity {
 
     private Spinner spinner;
-    private ArrayAdapter<Estilo> adapterCategoria;
-    private CervezaRepositorio product = new CervezaRepositorio();
-    private ArrayAdapter<Cerveza> adapterProductos;
+    private ArrayAdapter<Estilo> adapterEstilos;
+    private CervezaRepositorio repositorio = new CervezaRepositorio();
+    private ArrayAdapter<Cerveza> adapterCervezas;
     private TextView tvProducto;
-    private ListView listaProductos;
+    private ListView listaCervezas;
     private EditText edtCantidad;
     private TextView tvCantidad;
     private Button aceptar;
-    private Cerveza producto;
+    private Cerveza cerveza;
+    static Estilo[] estilos;
+    static Cerveza[] cervezas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.activity_lista_cervezas);
         spinner = findViewById(R.id.spinnerCategoria);
         edtCantidad = findViewById(R.id.edtCantidad);
         aceptar = findViewById(R.id.btnAceptar);
-        adapterCategoria = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, product.getCategorias());
-        adapterCategoria.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapterCategoria);
+        //adapterEstilos = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, repositorio.getCategorias());
+        adapterCervezas = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice);
+        //adapterEstilos.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapterEstilos);
         tvCantidad = findViewById(R.id.tvCantidad);
-        listaProductos = findViewById(R.id.listaProductos);
+        listaCervezas = findViewById(R.id.listaProductos);
         tvProducto = findViewById(R.id.productos);
-        adapterProductos = new ArrayAdapter(this, android.R.layout.simple_list_item_single_choice, product.getLista());
-        listaProductos.setAdapter(adapterProductos);
+        listaCervezas.setAdapter(adapterCervezas);
         this.aceptar.setOnClickListener(listenerBtnAceptar);
 
         /*if (this.getIntent().getStringExtra("requestCode").equals("2")) {
@@ -60,27 +66,60 @@ public class ListaCervezas extends AppCompatActivity {
             
         }*/
 
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Estilo cat = (Estilo) adapterView.getItemAtPosition(i);
-                adapterProductos = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_single_choice, product.buscarPorCategoria(cat));
-                listaProductos.setAdapter(adapterProductos);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-
-        listaProductos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listaCervezas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                producto = (Cerveza) adapterView.getItemAtPosition(i);
+                cerveza = (Cerveza) adapterView.getItemAtPosition(i);
             }
         });
+
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                EstiloRest catRest = new EstiloRest();
+                CervezaRepositorio.LISTA_ESTILOS = catRest.listarTodas();
+
+
+                CervezaRest cervezaRest = new CervezaRest();
+                CervezaRepositorio.LISTA_CERVEZA = cervezaRest.listarTodas();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        adapterEstilos = new ArrayAdapter<Estilo>(ListaCervezas.this, android.R.layout.simple_spinner_dropdown_item, CervezaRepositorio.LISTA_ESTILOS);
+
+                        repositorio.getCategorias();
+
+                        spinner.setAdapter(adapterEstilos);
+                        spinner.setSelection(0);
+                        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int
+                                    position, long id) {
+                                adapterCervezas.clear();
+
+                                adapterCervezas.addAll(repositorio.buscarPorEstilo((Estilo) parent.getItemAtPosition(position))
+                                );
+
+                                adapterCervezas.notifyDataSetChanged();
+
+                                listaCervezas.setAdapter(adapterCervezas);
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+                            }
+                        })
+                        ;
+
+                        listaCervezas.setAdapter(adapterCervezas);
+                    }
+                });
+            }
+        };
+        Thread hiloCargarCombo = new Thread(r);
+        hiloCargarCombo.start();
     }
 
     private View.OnClickListener listenerBtnAceptar = new View.OnClickListener() {
@@ -94,12 +133,10 @@ public class ListaCervezas extends AppCompatActivity {
                 return;
             }
             intentResultado.putExtra("cantidad", edtCantidad.getText().toString());
-            Log.d("TEST", "Eleccion: " + producto);
-            intentResultado.putExtra("producto", (String) producto.getId().toString());
+            Log.d("TEST", "Eleccion: " + cerveza);
+            intentResultado.putExtra("cerveza", (String) cerveza.getId().toString());
             setResult(Activity.RESULT_OK, intentResultado);
             finish();
         }
     };
-
-
 }

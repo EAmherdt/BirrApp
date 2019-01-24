@@ -14,48 +14,38 @@ import java.util.Random;
 
 public class CervezaRepositorio {
 
-    private static List<Cerveza> LISTA_PRODUCTOS = new ArrayList<>();
-    private static List<Estilo> CATEGORIAS_PRODUCTOS = new ArrayList<>();
-    private static boolean FLAG_INICIALIZADO = false;
-
-    private static void inicializar() {
-        int id = 0;
-        Random rand = new Random();
-        CATEGORIAS_PRODUCTOS.add(new Estilo(1, "IPA"));
-        CATEGORIAS_PRODUCTOS.add(new Estilo(2, "APA"));
-        CATEGORIAS_PRODUCTOS.add(new Estilo(3, "UPA"));
-        CATEGORIAS_PRODUCTOS.add(new Estilo(4, "OPA"));
-        for (Estilo cat : CATEGORIAS_PRODUCTOS) {
-            for (int i = 0; i < 25; i++) {
-                LISTA_PRODUCTOS.add(new Cerveza(id++,cat.getNombre(),cat,7.6,5.3));
-            }
-        }
-        FLAG_INICIALIZADO = true;
-    }
+    public static List<Cerveza> LISTA_CERVEZA = new ArrayList<>();
+    public static List<Estilo> LISTA_ESTILOS = new ArrayList<>();
 
     public CervezaRepositorio() {
-        if (!FLAG_INICIALIZADO) inicializar();
     }
 
     public List<Cerveza> getLista() {
-        return LISTA_PRODUCTOS;
+        return LISTA_CERVEZA;
     }
 
     public List<Estilo> getCategorias() {
-        return CATEGORIAS_PRODUCTOS;
+        return LISTA_ESTILOS;
     }
 
-    public Cerveza buscarPorId(Integer id) {
-        for (Cerveza p : LISTA_PRODUCTOS) {
+    public Cerveza buscarCervezaPorId(Integer id) {
+        for (Cerveza p : LISTA_CERVEZA) {
             if (p.getId().equals(id)) return p;
         }
         return null;
     }
 
-    public List<Cerveza> buscarPorCategoria(Estilo cat) {
+    public static Estilo buscarEstiloPorId(Integer id) {
+        for (Estilo p : LISTA_ESTILOS) {
+            if (p.getId().equals(id)) return p;
+        }
+        return null;
+    }
+
+    public List<Cerveza> buscarPorEstilo(Estilo estilo) {
         List<Cerveza> resultado = new ArrayList<>();
-        for (Cerveza p : LISTA_PRODUCTOS) {
-            if (p.getTipo().getId().equals(cat.getId())) resultado.add(p);
+        for (Cerveza p : LISTA_CERVEZA) {
+            if (p.getEstilo().getId().equals(estilo.getId())) resultado.add(p);
         }
         return resultado;
     }
