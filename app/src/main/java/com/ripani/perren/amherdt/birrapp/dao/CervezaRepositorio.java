@@ -24,7 +24,7 @@ public class CervezaRepositorio {
         return LISTA_CERVEZA;
     }
 
-    public List<Estilo> getCategorias() {
+    public List<Estilo> getEstilos() {
         return LISTA_ESTILOS;
     }
 

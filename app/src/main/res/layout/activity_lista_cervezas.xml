@@ -36,19 +36,6 @@
             android:layout_weight="1"
             android:choiceMode="multipleChoice"></ListView>
 
-        <TextView
-            android:id="@+id/tvCantidad"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cantidad a pedir" />
-
-        <EditText
-            android:id="@+id/edtCantidad"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:text="0" />
-
         <Button
             android:id="@+id/btnAceptar"
             android:layout_width="match_parent"
