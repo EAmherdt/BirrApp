@@ -79,7 +79,7 @@ public class AltaLocalFragment extends Fragment {
                 local.setNombre(etNombreLocal.getText().toString());
                 local.setHoraApertura(etHoraApertura.getText().toString());
                 local.setHoraCierre(etHoraCierre.getText().toString());
-                local.setReservas(rbAdmite.isChecked());
+                local.setReservas(rbAdmite.isChecked());//si reservas es 1 admite
                 getFragmentManager().beginTransaction().
                         remove(getFragmentManager().findFragmentById(R.id.contenedorFragmento)).commit();
             }
