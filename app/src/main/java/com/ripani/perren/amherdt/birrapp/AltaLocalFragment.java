@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,6 +19,7 @@ import android.widget.Spinner;
 public class AltaLocalFragment extends Fragment {
 
     private Button btnAñadirCervezas;
+    private ArrayList<String> arrayCervezas = new ArrayList<>();
 
     public AltaLocalFragment() {
         // Required empty public constructor
@@ -37,12 +40,22 @@ public class AltaLocalFragment extends Fragment {
             public void onClick(View view) {
                 System.out.println("click");
                 Intent intent = new Intent(getActivity(), ListaCervezas.class);
-                startActivity(intent);
+                intent.putStringArrayListExtra("cerveza",arrayCervezas);
+                intent.putStringArrayListExtra("cervezaCancel",arrayCervezas);
+                startActivityForResult(intent,1);
             }
         });
         return v;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Don't forget to check requestCode before continuing your job
+            if(requestCode==1){
+            arrayCervezas=(ArrayList<String>) data.getStringArrayListExtra("cervezas");
+            }
+        }
 
 
 }

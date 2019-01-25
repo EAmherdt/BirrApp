@@ -40,7 +40,13 @@
             android:id="@+id/btnAceptar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="AGREGAR" />
+            android:text="Aceptar" />
+
+        <Button
+            android:id="@+id/btnCancelar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancelar" />
 
 
     </LinearLayout>
