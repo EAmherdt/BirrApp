@@ -34,6 +34,7 @@ public class BuscarLocalesFragment extends Fragment {
     private ArrayAdapter<Cerveza> adapterCervezas;
     private ArrayAdapter<Estilo> adapterEstilos;
     private CervezaRepositorio repositorio = new CervezaRepositorio();
+    private ArrayList<Cerveza> arrayCervezas = new ArrayList<>();
     private Spinner spEstilo;
     private Spinner spMarca;
 
@@ -75,8 +76,18 @@ public class BuscarLocalesFragment extends Fragment {
                         adapterEstilos = new ArrayAdapter<Estilo>(getActivity(), android.R.layout.simple_spinner_dropdown_item, CervezaRepositorio.LISTA_ESTILOS);
                         spEstilo.setAdapter(adapterEstilos);
                         spEstilo.setSelection(0);
-
-                        adapterCervezas = new ArrayAdapter<Cerveza>(getActivity(), android.R.layout.simple_spinner_dropdown_item, CervezaRepositorio.LISTA_CERVEZA);
+                        boolean flag=false;
+                        for(int i=0;i<CervezaRepositorio.LISTA_CERVEZA.size();i++){
+                            for(int j=0;j<arrayCervezas.size();j++){
+                            if(arrayCervezas.get(j).getMarca().equals(CervezaRepositorio.LISTA_CERVEZA.get(i).getMarca())){
+                                flag=true;
+                            }
+                            }if(flag==false){
+                                arrayCervezas.add(CervezaRepositorio.LISTA_CERVEZA.get(i));
+                            }
+                            flag=false;
+                        }
+                        adapterCervezas = new ArrayAdapter<Cerveza>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrayCervezas);
                         spMarca.setAdapter(adapterCervezas);
                         spMarca.setSelection(0);
                     }

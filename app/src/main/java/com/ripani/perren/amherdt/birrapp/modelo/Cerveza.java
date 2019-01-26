@@ -47,7 +47,7 @@ public class Cerveza {
 
     @Override
     public String toString() {
-        return marca+ "( $" + estilo +")";
+        return marca;
 
     }
 

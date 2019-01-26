@@ -16,7 +16,7 @@
             android:id="@+id/categoriaSeleccionada"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Seleccionar una Categoria" />
+            android:text="Seleccionar un estilo" />
 
         <Spinner
             android:id="@+id/spinnerCategoria"
@@ -27,7 +27,7 @@
             android:id="@+id/productos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lista de Productos" />
+            android:text="Lista de Cervezas" />
 
         <ListView
             android:id="@+id/listaProductos"
