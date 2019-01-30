@@ -15,6 +15,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,7 +41,7 @@ public class CervezaRest {
 
             JSONObject categoriaJson = new JSONObject();
             categoriaJson.put("marca", c.getMarca());
-            categoriaJson.put("estiloId", c.getEstilo().getId());
+            //categoriaJson.put("estiloId", c.getEstilo().getId());
 
             //Abrir una conexión al servidor para enviar el POST
 
@@ -145,6 +146,14 @@ public class CervezaRest {
                     Cerveza cerveza = new Cerveza();
                     ///////////////////////////
                     cerveza.setMarca(listaCerveza.getJSONObject(i).getString("marca"));
+                    /*List<Integer> listaEstilosId = (List<Integer>) listaCerveza.getJSONObject(i).getJSONArray("estiloId");
+                    List<Estilo> listaEstilos = new ArrayList<Estilo>();
+                    for(Integer id: listaEstilosId) {
+                        Estilo estilo = CervezaRepositorio.buscarEstiloPorId(id);
+                        listaEstilos.add(estilo);
+                    }
+
+                    cerveza.setEstilo(listaEstilos);*/
                     cerveza.setEstilo(CervezaRepositorio.buscarEstiloPorId(listaCerveza.getJSONObject(i).getInt("estiloId")));
                     cerveza.setId(listaCerveza.getJSONObject(i).getInt("id"));
                     // analizar cada element del JSONArray

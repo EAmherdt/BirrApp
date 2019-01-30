@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.ripani.perren.amherdt.birrapp.dao.CervezaRepositorio;
@@ -18,6 +19,8 @@ import com.ripani.perren.amherdt.birrapp.modelo.CervezaRest;
 import com.ripani.perren.amherdt.birrapp.modelo.Estilo;
 import com.ripani.perren.amherdt.birrapp.modelo.EstiloRest;
 import com.ripani.perren.amherdt.birrapp.modelo.Local;
+import com.ripani.perren.amherdt.birrapp.modelo.LocalDao;
+import com.ripani.perren.amherdt.birrapp.modelo.MyDataBase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,15 +31,20 @@ import java.util.List;
  */
 public class BuscarLocalesFragment extends Fragment {
 
-   ;
+
     private EditText nombreLocal;
     private Button btnBuscar;
     private ArrayAdapter<Cerveza> adapterCervezas;
     private ArrayAdapter<Estilo> adapterEstilos;
+    private ArrayAdapter<Local> adapterLocales;
+    private ListView lvLocales;
     private CervezaRepositorio repositorio = new CervezaRepositorio();
     private ArrayList<Cerveza> arrayCervezas = new ArrayList<>();
     private Spinner spEstilo;
     private Spinner spMarca;
+    private LocalDao localDao;
+    private List<Local> listaLocales = new ArrayList<Local>();
+    private List<Estilo> arrayEstilos = new ArrayList<Estilo>();
 
     public BuscarLocalesFragment() {
         // Required empty public constructor
@@ -49,8 +57,14 @@ public class BuscarLocalesFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_buscar_locales, container, false);
 
+        localDao = MyDataBase.getInstance(this.getActivity()).getLocalDao();
+
         spMarca= (Spinner) v.findViewById(R.id.spMarca);
         spEstilo= (Spinner) v.findViewById(R.id.spEstilo);
+        btnBuscar= (Button) v.findViewById(R.id.btnBuscarLocal);
+        nombreLocal = (EditText) v.findViewById(R.id.etNombreLocalBuscar);
+        lvLocales = (ListView) v.findViewById(R.id.listaLocales);
+        adapterLocales = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_multiple_choice);
         final Local.Marca arrayMarca[]=Local.Marca.values();
         List<String> arrayMarcaSt=new ArrayList<>();
         for(int i=0;i<arrayMarca.length;i++){
@@ -59,6 +73,21 @@ public class BuscarLocalesFragment extends Fragment {
 
         spMarca.setAdapter(adapterCervezas);
         spEstilo.setAdapter(adapterEstilos);
+
+        Runnable hiloActualizacion = new Runnable() {
+            @Override
+            public void run() {
+                listaLocales = localDao.getLocalesPorNombre("");
+
+            }
+        };
+        Thread t1 = new Thread(hiloActualizacion);
+        t1.start();
+        while(t1.isAlive());
+        adapterLocales.addAll(listaLocales);
+
+        adapterLocales.notifyDataSetChanged();
+        lvLocales.setAdapter(adapterLocales);
 
         Runnable r = new Runnable() {
             @Override
@@ -72,11 +101,18 @@ public class BuscarLocalesFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
-                        adapterEstilos = new ArrayAdapter<Estilo>(getActivity(), android.R.layout.simple_spinner_dropdown_item, CervezaRepositorio.LISTA_ESTILOS);
+                        Estilo e = new Estilo();
+                        e.setNombre("Seleccione");
+                        arrayEstilos.add(e);
+                        arrayEstilos.addAll(CervezaRepositorio.LISTA_ESTILOS);
+                        adapterEstilos = new ArrayAdapter<Estilo>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrayEstilos);
                         spEstilo.setAdapter(adapterEstilos);
                         spEstilo.setSelection(0);
                         boolean flag=false;
+                        Cerveza c = new Cerveza();
+                        c.setMarca("Seleccione");
+                        arrayCervezas.add(c);
+
                         for(int i=0;i<CervezaRepositorio.LISTA_CERVEZA.size();i++){
                             for(int j=0;j<arrayCervezas.size();j++){
                             if(arrayCervezas.get(j).getMarca().equals(CervezaRepositorio.LISTA_CERVEZA.get(i).getMarca())){
@@ -87,6 +123,7 @@ public class BuscarLocalesFragment extends Fragment {
                             }
                             flag=false;
                         }
+
                         adapterCervezas = new ArrayAdapter<Cerveza>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrayCervezas);
                         spMarca.setAdapter(adapterCervezas);
                         spMarca.setSelection(0);
@@ -96,6 +133,31 @@ public class BuscarLocalesFragment extends Fragment {
         };
         Thread hiloCargarCombo = new Thread(r);
         hiloCargarCombo.start();
+
+        btnBuscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String cadena= nombreLocal.getText().toString();
+                adapterLocales.clear();
+
+
+                    Runnable hiloActualizacion = new Runnable() {
+                        @Override
+                        public void run() {
+                            listaLocales = localDao.getLocalesPorNombre(cadena);
+
+                        }
+                    };
+                    Thread t1 = new Thread(hiloActualizacion);
+                    t1.start();
+                    while(t1.isAlive());
+                    adapterLocales.addAll(listaLocales);
+
+                    adapterLocales.notifyDataSetChanged();
+                    lvLocales.setAdapter(adapterLocales);
+
+            }
+        });
 
 
         /*adapterCervezas = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_item,arrayMarcaSt);

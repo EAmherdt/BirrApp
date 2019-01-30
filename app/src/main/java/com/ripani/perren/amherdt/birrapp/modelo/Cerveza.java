@@ -1,14 +1,21 @@
 package com.ripani.perren.amherdt.birrapp.modelo;
 
+import java.util.List;
 import java.util.Objects;
+
 
 public class Cerveza {
 
     private Integer id;
     private String marca;
     private Estilo estilo; //ipa, apa
+    /*private List<Estilo> estilo; //ipa, apa
 
-
+    public Cerveza(Integer id, String marca, List<Estilo> estilos) {
+        this.id = id;
+        this.estilo = estilos;
+        this.marca = marca;
+    }*/
 
     public Cerveza(Integer id, String marca, Estilo tipo) {
         this.id = id;
@@ -44,6 +51,14 @@ public class Cerveza {
         this.estilo = tipo;
     }
 
+
+    /*public List<Estilo> getEstilo() {
+        return estilo;
+    }
+
+    public void setEstilo(List<Estilo> estilo) {
+        this.estilo = estilo;
+    }*/
 
     @Override
     public String toString() {

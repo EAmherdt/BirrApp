@@ -48,7 +48,8 @@ public class Local {
     private String horaCierre;
     private Double latitud;
     private Double longitud;
-    //private List<Marca> cervezas;
+    @TypeConverters({CervezaConverter.class})
+    private List<Cerveza> cervezas;
     private Boolean reservas;
 
 
@@ -108,4 +109,17 @@ public class Local {
         this.reservas = reservas;
     }
 
+    public List<Cerveza> getCervezas() {
+        return cervezas;
+    }
+
+    public void setCervezas(List<Cerveza> cervezas) {
+        this.cervezas = cervezas;
+    }
+
+    @Override
+    public String toString() {
+        return this.nombre;
+
+    }
 }

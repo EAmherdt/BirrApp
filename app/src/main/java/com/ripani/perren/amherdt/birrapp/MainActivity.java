@@ -15,8 +15,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import com.google.android.gms.maps.model.LatLng;
+
+/*public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, AltaLocalFragment.OnNuevoLugarListener {*/
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener,
+            AltaLocalFragment.OnNuevoLugarListener, MapaFragment.OnMapaListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,17 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        shouldDisplayHomeUp();
+    }
+
+    public void shouldDisplayHomeUp(){
+        //Enable Up button only  if there are entries in the back stack
+        boolean canback = getSupportFragmentManager().getBackStackEntryCount()>0;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
     }
 
     @Override
@@ -100,5 +115,42 @@ public class MainActivity extends AppCompatActivity
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.contenedorFragmento, fragmento).commit();
     }
+
+    @Override
+    public void coordenadasSeleccionadas(LatLng c) {
+        String tag = "nuevoReclamoFragment";
+        Fragment fragment =  getSupportFragmentManager().findFragmentByTag(tag);
+        if(fragment==null) {
+            fragment = new AltaLocalFragment();
+            ((AltaLocalFragment) fragment).setListener(MainActivity.this);
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString("latLng",c.latitude+";"+c.longitude);
+        fragment.setArguments(bundle);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.contenedorFragmento, fragment,tag)
+                .commit();
+    }
+
+    @Override
+    public void obtenerCoordenadas() {
+        String tag="mapaReclamos";
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if(fragment==null) {
+            fragment = new MapaFragment();
+            ((MapaFragment) fragment).setListener(this);
+        }
+        Bundle bundle = new Bundle();
+        bundle.putInt("tipo_mapa", 1);
+        fragment.setArguments(bundle);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.contenedorFragmento, fragment,tag)
+                .addToBackStack(null)
+                .commit();
+    }
+
+
 }
 

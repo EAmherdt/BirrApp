@@ -12,9 +12,16 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
+import com.ripani.perren.amherdt.birrapp.dao.CervezaRepositorio;
+import com.ripani.perren.amherdt.birrapp.modelo.Cerveza;
 import com.ripani.perren.amherdt.birrapp.modelo.Local;
+import com.ripani.perren.amherdt.birrapp.modelo.LocalDao;
+import com.ripani.perren.amherdt.birrapp.modelo.MyDataBase;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 
 /**
@@ -22,6 +29,15 @@ import java.util.ArrayList;
  */
 public class AltaLocalFragment extends Fragment {
 
+    public interface OnNuevoLugarListener {
+        public void obtenerCoordenadas();
+    }
+
+    public void setListener(OnNuevoLugarListener listener) {
+        this.listener = listener;
+    }
+
+    private OnNuevoLugarListener listener;
     private Button btnAñadirCervezas;
     private Button btnBuscarUbicacion;
     private Button btnCancelar;
@@ -32,6 +48,9 @@ public class AltaLocalFragment extends Fragment {
     private EditText etHoraCierre;
     private RadioButton rbAdmite;
     private RadioButton rbNoAdmite;
+    private Local local = new Local();
+    private LocalDao localDao;
+    private CervezaRepositorio repositorio = new CervezaRepositorio();
 
     public AltaLocalFragment() {
         // Required empty public constructor
@@ -44,15 +63,37 @@ public class AltaLocalFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_alta_local, container, false);
 
+        localDao = MyDataBase.getInstance(this.getActivity()).getLocalDao();
+
+        Runnable hiloActualizacion = new Runnable() {
+            @Override
+            public void run() {
+                List<Local> l = new ArrayList<Local>();
+                l = localDao.getAll();
+                System.out.println(l);
+
+            }
+        };
+        Thread t1 = new Thread(hiloActualizacion);
+        t1.start();
+
         btnAñadirCervezas= (Button) v.findViewById(R.id.btnAñadirCervezas);
         btnCancelar= (Button) v.findViewById(R.id.btnCancelar);
         btnCrear= (Button) v.findViewById(R.id.btnCrear);
+        btnBuscarUbicacion= (Button) v.findViewById(R.id.btnBuscarUbicacion);
         etNombreLocal = (EditText) v.findViewById(R.id.etNombreLocal);
         etHoraApertura = (EditText) v.findViewById(R.id.etHoraApertura);
         etHoraCierre = (EditText) v.findViewById(R.id.etHoraCierre);
         rbAdmite = (RadioButton) v.findViewById(R.id.rbAdmite);
         rbNoAdmite = (RadioButton) v.findViewById(R.id.rbNoAdmite);
 
+
+        btnBuscarUbicacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.obtenerCoordenadas();
+            }
+        });
 
         btnAñadirCervezas.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,13 +116,30 @@ public class AltaLocalFragment extends Fragment {
         btnCrear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Local local = new Local();
+
                 local.setNombre(etNombreLocal.getText().toString());
                 local.setHoraApertura(etHoraApertura.getText().toString());
                 local.setHoraCierre(etHoraCierre.getText().toString());
                 local.setReservas(rbAdmite.isChecked());//si reservas es 1 admite
+                List<Cerveza> listaCervezas = new ArrayList<Cerveza>();
+                for (String id : arrayCervezas) {
+                    listaCervezas.add(repositorio.buscarCervezaPorId(Integer.parseInt(id)));
+                }
+                local.setCervezas(listaCervezas);
+                Runnable hiloActualizacion = new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(local.getId()>0) localDao.update(local);
+                        else localDao.insert(local);
+
+                    }
+                };
+                Thread t1 = new Thread(hiloActualizacion);
+                t1.start();
                 getFragmentManager().beginTransaction().
                         remove(getFragmentManager().findFragmentById(R.id.contenedorFragmento)).commit();
+
             }
         });
 
@@ -97,6 +155,8 @@ public class AltaLocalFragment extends Fragment {
             arrayCervezas=(ArrayList<String>) data.getStringArrayListExtra("cervezas");
             }
         }
+
+
 
 
 }
