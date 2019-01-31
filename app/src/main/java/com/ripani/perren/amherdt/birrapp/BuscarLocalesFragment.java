@@ -101,7 +101,7 @@ public class BuscarLocalesFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Estilo e = new Estilo();
+                        final Estilo e = new Estilo();
                         e.setNombre("Seleccione");
                         arrayEstilos.add(e);
                         arrayEstilos.addAll(CervezaRepositorio.LISTA_ESTILOS);
@@ -109,7 +109,7 @@ public class BuscarLocalesFragment extends Fragment {
                         spEstilo.setAdapter(adapterEstilos);
                         spEstilo.setSelection(0);
                         boolean flag=false;
-                        Cerveza c = new Cerveza();
+                        final Cerveza c = new Cerveza();
                         c.setMarca("Seleccione");
                         arrayCervezas.add(c);
 
@@ -127,6 +127,118 @@ public class BuscarLocalesFragment extends Fragment {
                         adapterCervezas = new ArrayAdapter<Cerveza>(getActivity(), android.R.layout.simple_spinner_dropdown_item, arrayCervezas);
                         spMarca.setAdapter(adapterCervezas);
                         spMarca.setSelection(0);
+
+                        spMarca.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int
+                                    position, long id) {
+
+                                Cerveza cerveza = new Cerveza();
+                                cerveza = (Cerveza) adapterCervezas.getItem(position);
+                                //si selecciono una marca y estilo es "seleccionar"
+                                if(!cerveza.equals(c) && spEstilo.getSelectedItem().equals(e)) {
+                                    adapterEstilos.clear();
+                                    adapterEstilos.add(e);
+                                    for (int j = 0; j < CervezaRepositorio.LISTA_CERVEZA.size(); j++) {
+                                        if (cerveza.getMarca().equals(CervezaRepositorio.LISTA_CERVEZA.get(j).getMarca())) {
+                                            adapterEstilos.add(CervezaRepositorio.LISTA_CERVEZA.get(j).getEstilo());
+                                        }
+                                    }
+                                }
+                                //si selecciono "seleccionar" y estilo es "seleccionar"
+                                if(cerveza.equals(c) && spEstilo.getSelectedItem().equals(e)){
+                                    adapterEstilos.clear();
+                                    adapterEstilos.add(e);
+                                    arrayEstilos.addAll(CervezaRepositorio.LISTA_ESTILOS);
+                                }
+                                //si selecciono "seleccionar" y tengo un estilo seleccionado
+                                if(cerveza.equals(c) && !spEstilo.getSelectedItem().equals(e)){
+                                    Estilo estilo = (Estilo) spEstilo.getSelectedItem();
+                                    adapterEstilos.clear();
+                                    adapterEstilos.add(e);
+                                    arrayEstilos.addAll(CervezaRepositorio.LISTA_ESTILOS);
+                                    //hago setAdapter porque sino no me toma el setSelection
+                                    spEstilo.setAdapter(adapterEstilos);
+                                    spEstilo.setSelection(adapterEstilos.getPosition(estilo));
+                                }
+                                //si selecciono una marca y tengo un estilo seleccionado
+                                if(!cerveza.equals(c) && !spEstilo.getSelectedItem().equals(e)){
+                                    Estilo estilo = (Estilo) spEstilo.getSelectedItem();
+                                    adapterEstilos.clear();
+                                    adapterEstilos.add(e);
+                                    for (int j = 0; j < CervezaRepositorio.LISTA_CERVEZA.size(); j++) {
+                                        if (cerveza.getMarca().equals(CervezaRepositorio.LISTA_CERVEZA.get(j).getMarca())) {
+                                            adapterEstilos.add(CervezaRepositorio.LISTA_CERVEZA.get(j).getEstilo());
+                                        }
+                                    }
+                                    spEstilo.setAdapter(adapterEstilos);
+                                    spEstilo.setSelection(adapterEstilos.getPosition(estilo));
+                                }
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+
+                        spEstilo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int
+                                    position, long id) {
+                                Estilo estilo = new Estilo();
+                                estilo = (Estilo) adapterEstilos.getItem(position);
+                                //si selecciono un estilo y marca es "seleccionar"
+                                if(!estilo.equals(e) && spMarca.getSelectedItem().equals(c)) {
+                                    adapterCervezas.clear();
+                                    adapterCervezas.add(c);
+                                    for (int j = 0; j < CervezaRepositorio.LISTA_CERVEZA.size(); j++) {
+                                        if (estilo.equals(CervezaRepositorio.LISTA_CERVEZA.get(j).getEstilo())) {
+                                            adapterCervezas.add(CervezaRepositorio.LISTA_CERVEZA.get(j));
+                                        }
+                                    }
+                                }
+                                //si selecciono "seleccionar" y marca es "seleccionar"
+                                if(estilo.equals(e) && spMarca.getSelectedItem().equals(c)){
+                                    adapterCervezas.clear();
+                                    adapterCervezas.add(c);
+                                    boolean flag=false;
+                                    for(int i=0;i<CervezaRepositorio.LISTA_CERVEZA.size();i++){
+                                        for(int j=0;j<arrayCervezas.size();j++){
+                                            if(arrayCervezas.get(j).getMarca().equals(CervezaRepositorio.LISTA_CERVEZA.get(i).getMarca())){
+                                                flag=true;
+                                            }
+                                        }if(flag==false){
+                                            arrayCervezas.add(CervezaRepositorio.LISTA_CERVEZA.get(i));
+                                        }
+                                        flag=false;
+                                    }
+                                }
+                                //si selecciono un estilo y tengo una marca seleccionada
+                                if(!estilo.equals(e) && !spMarca.getSelectedItem().equals(c)){
+                                    //!!!
+                                    estilo = (Estilo) spEstilo.getSelectedItem();
+                                    Cerveza cerveza = (Cerveza) spMarca.getSelectedItem();
+                                    //!!!
+                                    adapterCervezas.clear();
+                                    adapterCervezas.add(c);
+
+                                    for (int j = 0; j < CervezaRepositorio.LISTA_CERVEZA.size(); j++) {
+                                        if (estilo.equals(CervezaRepositorio.LISTA_CERVEZA.get(j).getEstilo())) {
+                                            adapterCervezas.add(CervezaRepositorio.LISTA_CERVEZA.get(j));
+                                        }
+                                    }
+                                    spMarca.setAdapter(adapterCervezas);
+                                    spMarca.setSelection(adapterCervezas.getPosition(cerveza));
+                                    System.out.println("asadasddsd"+adapterCervezas.getPosition(cerveza));
+                                }
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
                     }
                 });
             }
@@ -158,6 +270,8 @@ public class BuscarLocalesFragment extends Fragment {
 
             }
         });
+
+
 
 
         /*adapterCervezas = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_item,arrayMarcaSt);

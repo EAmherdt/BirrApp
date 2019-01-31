@@ -14,7 +14,7 @@
             android:id="@+id/tvMarca"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Seleccionar marca" />
+            android:text="Filtrar por marca" />
 
         <Spinner
             android:id="@+id/spMarca"
@@ -25,7 +25,7 @@
             android:id="@+id/tvEstilo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Seleccionar estilo" />
+            android:text="Filtrar por estilo" />
 
         <Spinner
             android:id="@+id/spEstilo"
@@ -36,7 +36,7 @@
             android:id="@+id/tvNombreLocal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nombre del local"/>
+            android:text="Filtrar por nombre del local"/>
 
         <EditText
             android:id="@+id/etNombreLocalBuscar"
