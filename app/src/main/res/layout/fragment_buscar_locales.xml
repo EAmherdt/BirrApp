@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:text="Filtrar por marca" />
 
-        <Spinner
+        <com.ripani.perren.amherdt.birrapp.modelo.Spinner
             android:id="@+id/spMarca"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />.
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:text="Filtrar por estilo" />
 
-        <Spinner
+        <com.ripani.perren.amherdt.birrapp.modelo.Spinner
             android:id="@+id/spEstilo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

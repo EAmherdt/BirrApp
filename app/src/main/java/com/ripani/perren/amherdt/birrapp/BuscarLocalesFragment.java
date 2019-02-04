@@ -40,12 +40,13 @@ public class BuscarLocalesFragment extends Fragment {
     private ListView lvLocales;
     private CervezaRepositorio repositorio = new CervezaRepositorio();
     private ArrayList<Cerveza> arrayCervezas = new ArrayList<>();
-    private Spinner spEstilo;
-    private Spinner spMarca;
+    private com.ripani.perren.amherdt.birrapp.modelo.Spinner spEstilo;
+    private com.ripani.perren.amherdt.birrapp.modelo.Spinner spMarca;
     private LocalDao localDao;
     private List<Local> listaLocales = new ArrayList<Local>();
     private List<Estilo> arrayEstilos = new ArrayList<Estilo>();
-
+    private int countSpinnerListenerEstilo=0;
+    private int countSpinnerListenerMarca=0;
     public BuscarLocalesFragment() {
         // Required empty public constructor
     }
@@ -59,8 +60,8 @@ public class BuscarLocalesFragment extends Fragment {
 
         localDao = MyDataBase.getInstance(this.getActivity()).getLocalDao();
 
-        spMarca= (Spinner) v.findViewById(R.id.spMarca);
-        spEstilo= (Spinner) v.findViewById(R.id.spEstilo);
+        spMarca= (com.ripani.perren.amherdt.birrapp.modelo.Spinner) v.findViewById(R.id.spMarca);
+        spEstilo= (com.ripani.perren.amherdt.birrapp.modelo.Spinner) v.findViewById(R.id.spEstilo);
         btnBuscar= (Button) v.findViewById(R.id.btnBuscarLocal);
         nombreLocal = (EditText) v.findViewById(R.id.etNombreLocalBuscar);
         lvLocales = (ListView) v.findViewById(R.id.listaLocales);
@@ -163,16 +164,19 @@ public class BuscarLocalesFragment extends Fragment {
                                 }
                                 //si selecciono una marca y tengo un estilo seleccionado
                                 if(!cerveza.equals(c) && !spEstilo.getSelectedItem().equals(e)){
-                                    Estilo estilo = (Estilo) spEstilo.getSelectedItem();
-                                    adapterEstilos.clear();
-                                    adapterEstilos.add(e);
-                                    for (int j = 0; j < CervezaRepositorio.LISTA_CERVEZA.size(); j++) {
-                                        if (cerveza.getMarca().equals(CervezaRepositorio.LISTA_CERVEZA.get(j).getMarca())) {
-                                            adapterEstilos.add(CervezaRepositorio.LISTA_CERVEZA.get(j).getEstilo());
+                                        countSpinnerListenerEstilo=1;
+                                        Estilo estilo = (Estilo) spEstilo.getSelectedItem();
+                                        adapterEstilos.clear();
+                                        adapterEstilos.add(e);
+                                        for (int j = 0; j < CervezaRepositorio.LISTA_CERVEZA.size(); j++) {
+                                            if (cerveza.getMarca().equals(CervezaRepositorio.LISTA_CERVEZA.get(j).getMarca())) {
+                                                adapterEstilos.add(CervezaRepositorio.LISTA_CERVEZA.get(j).getEstilo());
+                                            }
                                         }
-                                    }
-                                    spEstilo.setAdapter(adapterEstilos);
-                                    spEstilo.setSelection(adapterEstilos.getPosition(estilo));
+                                        spEstilo.setAdapter(adapterEstilos);
+                                        spEstilo.setSelection(adapterEstilos.getPosition(estilo));
+                                        System.out.println("Estilo: "+estilo.getNombre()+" "+ adapterEstilos.getPosition(estilo));
+
                                 }
                             }
 
@@ -215,23 +219,37 @@ public class BuscarLocalesFragment extends Fragment {
                                     }
                                 }
                                 //si selecciono un estilo y tengo una marca seleccionada
-                                if(!estilo.equals(e) && !spMarca.getSelectedItem().equals(c)){
-                                    //!!!
-                                    estilo = (Estilo) spEstilo.getSelectedItem();
-                                    Cerveza cerveza = (Cerveza) spMarca.getSelectedItem();
-                                    //!!!
-                                    adapterCervezas.clear();
-                                    adapterCervezas.add(c);
+                                if(!estilo.equals(e) && !spMarca.getSelectedItem().equals(c)) {
+                                    if (countSpinnerListenerEstilo == 0) {
+                                        countSpinnerListenerMarca=1;
+                                        Cerveza cerveza = (Cerveza) spMarca.getSelectedItem();
+                                        //!!!
+                                        adapterCervezas.clear();
+                                        adapterCervezas.add(c);
 
-                                    for (int j = 0; j < CervezaRepositorio.LISTA_CERVEZA.size(); j++) {
-                                        if (estilo.equals(CervezaRepositorio.LISTA_CERVEZA.get(j).getEstilo())) {
-                                            adapterCervezas.add(CervezaRepositorio.LISTA_CERVEZA.get(j));
+                                        for (int j = 0; j < CervezaRepositorio.LISTA_CERVEZA.size(); j++) {
+                                            if (estilo.equals(CervezaRepositorio.LISTA_CERVEZA.get(j).getEstilo())) {
+                                                adapterCervezas.add(CervezaRepositorio.LISTA_CERVEZA.get(j));
+                                            }
                                         }
+                                        spMarca.setAdapter(adapterCervezas);
+                                        for(int q=0;q < CervezaRepositorio.LISTA_CERVEZA.size(); q++){
+                                            if(cerveza.getMarca().equals(CervezaRepositorio.LISTA_CERVEZA.get(q).getMarca()))
+                                            cerveza=CervezaRepositorio.LISTA_CERVEZA.get(q);
+                                            if(adapterCervezas.getPosition(cerveza)!=-1) {
+                                                spMarca.setSelection(adapterCervezas.getPosition(cerveza));
+                                            }
+                                        }
+
+
+                                        System.out.println("Cerveza: "+cerveza.getMarca()+" "+ adapterCervezas.getPosition(cerveza));
+
                                     }
-                                    spMarca.setAdapter(adapterCervezas);
-                                    spMarca.setSelection(adapterCervezas.getPosition(cerveza));
-                                    System.out.println("asadasddsd"+adapterCervezas.getPosition(cerveza));
+                                    else{
+                                        countSpinnerListenerEstilo=0;
+                                    }
                                 }
+
                             }
 
                             @Override
@@ -251,6 +269,10 @@ public class BuscarLocalesFragment extends Fragment {
             public void onClick(View view) {
                 final String cadena= nombreLocal.getText().toString();
                 adapterLocales.clear();
+                int countCerveza=0;
+                Cerveza cerveza = new Cerveza();
+                cerveza.setMarca(((Cerveza) spMarca.getSelectedItem()).getMarca());
+                cerveza.setEstilo(((Estilo) spEstilo.getSelectedItem()));
 
 
                     Runnable hiloActualizacion = new Runnable() {
@@ -264,6 +286,27 @@ public class BuscarLocalesFragment extends Fragment {
                     t1.start();
                     while(t1.isAlive());
                     adapterLocales.addAll(listaLocales);
+                    for(int i=0;i < adapterLocales.getCount(); i++) {
+                        List<Cerveza> listaCervezas = adapterLocales.getItem(i).getCervezas();
+                        for (int j = 0; j < listaCervezas.size(); j++) {
+                            if (cerveza.getMarca() != "Seleccione" && cerveza.getEstilo().getNombre() != "Seleccione" && listaCervezas.get(j).getMarca().equals(cerveza.getMarca()) && listaCervezas.get(j).getEstilo().equals(cerveza.getEstilo())){
+                                countCerveza=1;
+                            }
+                            if (cerveza.getMarca() != "Seleccione" && cerveza.getEstilo().getNombre() == "Seleccione" && listaCervezas.get(j).getMarca().equals(cerveza.getMarca())){
+                                countCerveza=1;
+                            }
+                            if (cerveza.getMarca() == "Seleccione" && cerveza.getEstilo().getNombre() != "Seleccione" && listaCervezas.get(j).getEstilo().equals(cerveza.getEstilo())){
+                                countCerveza=1;
+                            }
+                            if (cerveza.getMarca() == "Seleccione" && cerveza.getEstilo().getNombre() == "Seleccione"){
+                                countCerveza=1;
+                            }
+                        }
+                        if (countCerveza != 1) {
+                            adapterLocales.remove(adapterLocales.getItem(i));
+                            countCerveza=0;
+                        }
+                    }
 
                     adapterLocales.notifyDataSetChanged();
                     lvLocales.setAdapter(adapterLocales);
