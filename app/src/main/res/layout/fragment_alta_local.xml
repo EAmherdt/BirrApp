@@ -56,16 +56,22 @@
             android:layout_height="wrap_content"/>
 
         <Button
-            android:id="@+id/btnBuscarUbicacion"
+            android:id="@+id/btnImagen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Buscar Ubicacion" />
+            android:text="agregar foto" />
 
         <Button
             android:id="@+id/btnAñadirCervezas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Añadir Cervezas" />
+
+        <Button
+            android:id="@+id/btnBuscarUbicacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Buscar Ubicacion" />
 
         <RadioGroup
             android:id="@+id/rgReservas"

@@ -3,17 +3,20 @@ package com.ripani.perren.amherdt.birrapp.modelo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.media.Image;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Entity
 public class Local {
 
-    public enum Marca {
-        PALOHUESO("Palo & Hueso", Arrays.asList(Estilo.IPA,Estilo.GOLDEN)),
-        PATAGONIA("Patagonia", Arrays.asList(Estilo.WEISSE)),
-        YACARE("Yacare", Arrays.asList(Estilo.IPA,Estilo.GOLDEN,Estilo.REDALE,Estilo.WEISSE));
+
+
+    public enum Marca {;
+
 
         private String nombreMarca;
         private List<Estilo> estilos;
@@ -31,8 +34,7 @@ public class Local {
             this.estilos = estilos;
         }
     }
-    public enum Estilo {
-        IPA("IPA"),GOLDEN("GOLDEN"), REDALE("RED ALE"),WEISSE("WEISSE"),;
+    public enum Estilo {;
 
         private String nombreMarca;
 

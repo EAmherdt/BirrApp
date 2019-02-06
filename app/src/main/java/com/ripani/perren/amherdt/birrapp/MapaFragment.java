@@ -98,8 +98,8 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         //localDao = MyDatabase.getInstance(getContext()).getReclamoDao();
 
         Runnable r = new Runnable() {
-            @Override
-            public void run() {
+                @Override
+                public void run() {
                 final Local local = localDao.getById(idLocal);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override

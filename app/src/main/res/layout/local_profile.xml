@@ -16,7 +16,7 @@
             android:layout_height="125dp"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="0dp"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            tools:srcCompat="@tools:sample/backgrounds/scenic[12]" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,6 +29,7 @@
                 android:id="@+id/nombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold|italic"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:singleLine="true"
@@ -67,11 +68,13 @@
             <ListView
                 android:id="@+id/listaCervezas"
                 android:layout_width="match_parent"
-                android:layout_height="155dp" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_above="@+id/btnReservar"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="bottom"
                 android:orientation="vertical">
 
@@ -79,8 +82,9 @@
                     android:id="@+id/btnReservar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Button"
-                    tools:text="RESERVAR" />
+                    android:layout_weight="1"
+                    android:layout_alignParentBottom="true"
+                    android:text="Reservar" />
             </LinearLayout>
 
         </LinearLayout>

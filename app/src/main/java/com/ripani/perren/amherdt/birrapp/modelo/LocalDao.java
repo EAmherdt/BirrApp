@@ -15,7 +15,7 @@ public interface LocalDao {
     List<Local> getByTipo(String pTipo);*/
 
     @Query("SELECT * FROM Local WHERE id = :idLocal")
-    Local getById(int idLocal);
+    Local getById(long idLocal);
 
     @Query("SELECT * FROM Local WHERE nombre LIKE '%' || :cadena || '%'")
     List<Local> getLocalesPorNombre(String cadena);

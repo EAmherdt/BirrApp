@@ -2,13 +2,11 @@ package com.ripani.perren.amherdt.birrapp;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,6 +22,8 @@ import com.google.android.gms.maps.model.LatLng;
         implements NavigationView.OnNavigationItemSelectedListener, AltaLocalFragment.OnNuevoLugarListener {*/
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener,
             AltaLocalFragment.OnNuevoLugarListener, MapaFragment.OnMapaListener{
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
 
 
 
@@ -105,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragment =  getSupportFragmentManager().findFragmentByTag(tag);
             if(fragment==null) {
                 fragment = new AltaLocalFragment();
-                ((AltaLocalFragment) fragment).setListener(MainActivity.this);
+                ((AltaLocalFragment) fragment).setListenerLugar(MainActivity.this);
             }
             FragmentManager manager = getSupportFragmentManager();
             manager.beginTransaction().replace(R.id.contenedorFragmento, fragment, tag).commit();
@@ -152,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment fragment =  getSupportFragmentManager().findFragmentByTag(tag);
         if(fragment==null) {
             fragment = new AltaLocalFragment();
-            ((AltaLocalFragment) fragment).setListener(MainActivity.this);
+            ((AltaLocalFragment) fragment).setListenerLugar(MainActivity.this);
         }
         Bundle bundle = new Bundle();
         bundle.putString("latLng",c.latitude+";"+c.longitude);
@@ -205,6 +208,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             notificationManager.createNotificationChannel(channel);
         }
     }
+
+
 
 
 }

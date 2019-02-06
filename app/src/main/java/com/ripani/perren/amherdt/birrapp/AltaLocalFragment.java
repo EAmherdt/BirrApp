@@ -1,9 +1,9 @@
 package com.ripani.perren.amherdt.birrapp;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ripani.perren.amherdt.birrapp.dao.CervezaRepositorio;
@@ -23,8 +22,6 @@ import com.ripani.perren.amherdt.birrapp.modelo.MyDataBase;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,13 +32,22 @@ public class AltaLocalFragment extends Fragment {
         public void obtenerCoordenadas();
 }
 
-    public void setListener(OnNuevoLugarListener listener) {
-        this.listener = listener;
+    public interface OnImagenListener {
+        public void obtenerImagen();
     }
 
-    private OnNuevoLugarListener listener;
+
+    public void setListenerLugar(OnNuevoLugarListener listenerLugar) {
+        this.listenerLugar = listenerLugar;
+    }
+
+
+
+    private OnNuevoLugarListener listenerLugar;
+
     private Button btnAñadirCervezas;
     private Button btnBuscarUbicacion;
+    private Button btnImagen;
     private Button btnCancelar;
     private Button btnCrear;
     private ArrayList<String> arrayCervezas = new ArrayList<>();
@@ -55,6 +61,7 @@ public class AltaLocalFragment extends Fragment {
     private LocalDao localDao;
     private CervezaRepositorio repositorio = new CervezaRepositorio();
     private long idLocal;
+
 
 
     public AltaLocalFragment() {
@@ -86,6 +93,7 @@ public class AltaLocalFragment extends Fragment {
         btnAñadirCervezas= (Button) v.findViewById(R.id.btnAñadirCervezas);
         btnCancelar= (Button) v.findViewById(R.id.btnCancelar);
         btnCrear= (Button) v.findViewById(R.id.btnCrear);
+        btnImagen= (Button) v.findViewById(R.id.btnImagen);
         btnBuscarUbicacion= (Button) v.findViewById(R.id.btnBuscarUbicacion);
         etNombreLocal = (EditText) v.findViewById(R.id.etNombreLocal);
         etHoraApertura = (EditText) v.findViewById(R.id.etHoraApertura);
@@ -93,6 +101,7 @@ public class AltaLocalFragment extends Fragment {
         rbAdmite = (RadioButton) v.findViewById(R.id.rbAdmite);
         rbNoAdmite = (RadioButton) v.findViewById(R.id.rbNoAdmite);
         tvCoord= (TextView) v.findViewById(R.id.tvCoord);
+        Intent cameraIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         String coordenadas = "0;0";
         if(getArguments()!=null) coordenadas = getArguments().getString("latLng","0;0");
@@ -101,7 +110,19 @@ public class AltaLocalFragment extends Fragment {
         btnBuscarUbicacion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.obtenerCoordenadas();
+                listenerLugar.obtenerCoordenadas();
+
+            }
+        });
+
+        btnImagen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Complete action using"), 1);
 
             }
         });
@@ -201,26 +222,15 @@ public class AltaLocalFragment extends Fragment {
         });
 
 
+
+
+
+
+
         return v;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        // Don't forget to check requestCode before continuing your job
-            if(requestCode==1){
-                arrayCervezas=(ArrayList<String>) data.getStringArrayListExtra("cervezas");
-            }
-        }
-
-
-        public void setTexts(){
-            local.setNombre(etNombreLocal.getText().toString());
-            local.setHoraApertura(etHoraApertura.getText().toString());
-            local.setHoraCierre(etHoraCierre.getText().toString());
-            local.setReservas(rbAdmite.isChecked());//si reservas es 1 admite
-        }
 
 
 

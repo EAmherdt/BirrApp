@@ -1,6 +1,7 @@
 package com.ripani.perren.amherdt.birrapp;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.ripani.perren.amherdt.birrapp.dao.CervezaRepositorio;
 import com.ripani.perren.amherdt.birrapp.modelo.Cerveza;
@@ -65,7 +67,7 @@ public class BuscarLocalesFragment extends Fragment {
         btnBuscar= (Button) v.findViewById(R.id.btnBuscarLocal);
         nombreLocal = (EditText) v.findViewById(R.id.etNombreLocalBuscar);
         lvLocales = (ListView) v.findViewById(R.id.listaLocales);
-        adapterLocales = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_multiple_choice);
+        adapterLocales = new ArrayAdapter(getActivity(), android.R.layout.simple_selectable_list_item);
         final Local.Marca arrayMarca[]=Local.Marca.values();
         List<String> arrayMarcaSt=new ArrayList<>();
         for(int i=0;i<arrayMarca.length;i++){
@@ -74,6 +76,8 @@ public class BuscarLocalesFragment extends Fragment {
 
         spMarca.setAdapter(adapterCervezas);
         spEstilo.setAdapter(adapterEstilos);
+
+
 
         Runnable hiloActualizacion = new Runnable() {
             @Override
@@ -264,6 +268,11 @@ public class BuscarLocalesFragment extends Fragment {
         Thread hiloCargarCombo = new Thread(r);
         hiloCargarCombo.start();
 
+
+
+
+
+
         btnBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -316,7 +325,6 @@ public class BuscarLocalesFragment extends Fragment {
 
 
 
-
         /*adapterCervezas = new ArrayAdapter<>(getActivity(),android.R.layout.simple_spinner_item,arrayMarcaSt);
         adapterCervezas.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         marcas.setAdapter(adapterCervezas);*/
@@ -340,7 +348,24 @@ public class BuscarLocalesFragment extends Fragment {
             }
         });
         //return inflater.inflate(R.layout.fragment_buscar_locales, container, false);
+
+
+        lvLocales.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+               Local local = (Local) adapterView.getItemAtPosition(i);
+                Intent intent = new Intent(getActivity(),PerfilLocal.class);
+                intent.putExtra("idlocal", local.getId());
+                startActivity(intent);
+
+            }
+        });
+
+
         return v;
     }
+
+
+
 
 }
