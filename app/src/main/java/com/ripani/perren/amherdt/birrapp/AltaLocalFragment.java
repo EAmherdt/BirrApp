@@ -1,6 +1,7 @@
 package com.ripani.perren.amherdt.birrapp;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -55,9 +56,11 @@ public class AltaLocalFragment extends Fragment {
     private CervezaRepositorio repositorio = new CervezaRepositorio();
     private long idLocal;
 
+
     public AltaLocalFragment() {
         // Required empty public constructor
     }
+
 
 
     @Override
@@ -149,27 +152,46 @@ public class AltaLocalFragment extends Fragment {
                         if(local.getId()>0) localDao.update(local);
                         else {
                             idLocal = localDao.insert(local);
+                            System.out.println("IDLOCAL"+idLocal);
                         }
+
+
                     }
                 };
-                Thread t1 = new Thread(hiloActualizacion);
-                t1.start();
 
-
-                Runnable hiloNoti = new Runnable() {
+                Runnable hiloNotificacion = new Runnable() {
                     @Override
                     public void run() {
 
-                        Intent intentAceptado = new Intent(getContext(),NotificationReceiver.class);
-                        intentAceptado.putExtra("nombreLocal",local.getNombre());
-                        intentAceptado.putExtra("idLocal",idLocal);
+
+                        System.out.println("IDLOCAL2" + idLocal);
+                        Intent intentAceptado = new Intent(getActivity(), NotificationReceiver.class);
+                        intentAceptado.putExtra("nombreLocal", local.getNombre());
+                        intentAceptado.putExtra("idLocal", idLocal);
 
                         getActivity().sendBroadcast(intentAceptado);
-
                     }
                 };
-                Thread t2 = new Thread(hiloNoti);
+
+
+                Thread t1 = new Thread(hiloActualizacion);
+                t1.start();
+
+                try {
+                    t1.join();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+
+                //El hilo de notificaciones se ejecuta despues de actualizar los dato, ya que
+                // habia problemas con pasar el id ya que el objeto no se habia creado aun.
+
+                    Thread t2 = new Thread(hiloNotificacion);
                 t2.start();
+
+
+
 
 
                 getFragmentManager().beginTransaction().

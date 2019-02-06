@@ -24,7 +24,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         String nombreLocal = (String) b.get("nombreLocal");
 
         //deberia ir al perfil del local
-        Intent destino = new Intent(context, MainActivity.class);
+        Intent destino = new Intent(context, ListaCervezas.class);
         //deberia ir al perfil del local
 
 

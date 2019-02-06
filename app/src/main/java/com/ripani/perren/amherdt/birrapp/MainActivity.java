@@ -1,5 +1,8 @@
 package com.ripani.perren.amherdt.birrapp;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        createNotificationChannel();
 
 
 
@@ -39,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
+
     }
 
     @Override
@@ -122,9 +130,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
+
+
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+
+
     }
 
     private void CargarFragmento(Fragment fragmento){
@@ -168,8 +182,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
+
+
     public static void notificar(String nombre){
 
+    }
+
+
+    private void createNotificationChannel() {
+        // Crear el canal de notificaciones pero solo para API 26 io superior
+        // dado que NotificationChannel es una clase nueva que no está incluida
+        // en las librerías de soporte qeu brindan compatibilidad hacía atrás
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.canal_estado_nombre);
+            String description = getString(R.string.canal_estado_descr);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("CANAL01", name, importance);
+            channel.setDescription(description);
+            // Registrar el canal en el sistema
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
 
