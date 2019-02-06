@@ -60,12 +60,12 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
             container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container,
                 savedInstanceState);
-        tipoMapa=0;
-        Bundle argumentos = getArguments();
-        if(argumentos !=null) {
+        tipoMapa=1;
+        //Bundle argumentos = getArguments();
+       /* if(argumentos !=null) {
             tipoMapa = argumentos.getInt("tipo_mapa",0);
             idLocalSeleccionado = argumentos.getInt("idLocalSeleccionado",0);
-        }
+        }*/
         getMapAsync(this);
         return rootView;
     }

@@ -91,9 +91,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         boolean fragmentTransaction = false;
         Fragment fragment = null;
-        String tag = "";
+        String tag = "nuevoReclamoFragment";
         if (id == R.id.navAltaLocal) {
-            CargarFragmento(new AltaLocalFragment());
+            //CargarFragmento(new AltaLocalFragment());
+            fragment =  getSupportFragmentManager().findFragmentByTag(tag);
+            if(fragment==null) {
+                fragment = new AltaLocalFragment();
+                ((AltaLocalFragment) fragment).setListener(MainActivity.this);
+            }
+            FragmentManager manager = getSupportFragmentManager();
+            manager.beginTransaction().replace(R.id.contenedorFragmento, fragment, tag).commit();
+           /* if(fragmentTransaction) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.contenedorFragmento, fragment,tag)
+                        .addToBackStack(null)
+                        .commit();
+            }*/
+
+
         } else if (id == R.id.navBuscarLocales) {
             CargarFragmento(new BuscarLocalesFragment());
         } else if (id == R.id.nav_slideshow) {
@@ -149,6 +165,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .replace(R.id.contenedorFragmento, fragment,tag)
                 .addToBackStack(null)
                 .commit();
+    }
+
+
+    public static void notificar(String nombre){
+
     }
 
 

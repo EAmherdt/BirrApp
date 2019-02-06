@@ -50,17 +50,16 @@
             android:layout_height="wrap_content"
             android:text="Ubicación: " />
 
+        <TextView
+            android:id="@+id/tvCoord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <Button
             android:id="@+id/btnBuscarUbicacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Buscar Ubicacion" />
-
-        <TextView
-            android:id="@+id/tvCervezas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cervezas: " />
 
         <Button
             android:id="@+id/btnAñadirCervezas"
