@@ -14,6 +14,13 @@ import java.util.List;
 public class Local {
 
 
+    public int getCapacidad() {
+        return capacidad;
+    }
+
+    public void setCapacidad(int capacidad) {
+        this.capacidad = capacidad;
+    }
 
     public enum Marca {;
 
@@ -50,6 +57,7 @@ public class Local {
     private String horaCierre;
     private Double latitud;
     private Double longitud;
+    private int capacidad;
     @TypeConverters({CervezaConverter.class})
     private List<Cerveza> cervezas;
     private Boolean reservas;

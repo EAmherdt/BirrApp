@@ -54,6 +54,7 @@ public class AltaLocalFragment extends Fragment {
     private EditText etNombreLocal;
     private EditText etHoraApertura;
     private EditText etHoraCierre;
+    private EditText etCapacidad;
     private TextView tvCoord;
     private RadioButton rbAdmite;
     private RadioButton rbNoAdmite;
@@ -98,6 +99,7 @@ public class AltaLocalFragment extends Fragment {
         etNombreLocal = (EditText) v.findViewById(R.id.etNombreLocal);
         etHoraApertura = (EditText) v.findViewById(R.id.etHoraApertura);
         etHoraCierre = (EditText) v.findViewById(R.id.etHoraCierre);
+        etCapacidad = (EditText) v.findViewById(R.id.etCapacidad);
         rbAdmite = (RadioButton) v.findViewById(R.id.rbAdmite);
         rbNoAdmite = (RadioButton) v.findViewById(R.id.rbNoAdmite);
         tvCoord= (TextView) v.findViewById(R.id.tvCoord);
@@ -127,6 +129,7 @@ public class AltaLocalFragment extends Fragment {
             }
         });
 
+
         btnAñadirCervezas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,6 +155,7 @@ public class AltaLocalFragment extends Fragment {
                 local.setNombre(etNombreLocal.getText().toString());
                 local.setHoraApertura(etHoraApertura.getText().toString());
                 local.setHoraCierre(etHoraCierre.getText().toString());
+                local.setCapacidad(Integer.parseInt(etCapacidad.getText().toString()));
                 local.setReservas(rbAdmite.isChecked());//si reservas es 1 admite
                 List<Cerveza> listaCervezas = new ArrayList<Cerveza>();
                 for (String id : arrayCervezas) {

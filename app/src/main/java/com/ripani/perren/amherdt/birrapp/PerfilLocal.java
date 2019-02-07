@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ripani.perren.amherdt.birrapp.modelo.Cerveza;
 import com.ripani.perren.amherdt.birrapp.modelo.Local;
@@ -108,8 +109,43 @@ public class PerfilLocal extends AppCompatActivity  {
             return;
         }
 
-
         reservar.setEnabled(local.getReservas());
+
+
+
+        reservar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+               int capacidadRestante = local.getCapacidad();
+                if(capacidadRestante>0){
+                    local.setCapacidad(capacidadRestante-1);
+
+
+                    Runnable dbthread = new Runnable() {
+                        @Override
+                        public void run() {
+
+                    localDao.update(local);
+
+                        }
+                    };
+
+                    Thread t1 = new Thread(dbthread);
+                    t1.start();
+
+                    Toast.makeText(getBaseContext(), "Reserva Registrada",
+                            Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(getBaseContext(), "No hay lugar disponible",
+                            Toast.LENGTH_LONG).show();
+            }
+
+
+            }
+        });
+
+
 
         ubicacion.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -133,7 +169,7 @@ public class PerfilLocal extends AppCompatActivity  {
 
     }
 
-    @Override
+    @Override //BORRAR
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
