@@ -339,8 +339,8 @@ public class BuscarLocalesFragment extends Fragment {
                         if (countCerveza != 1) {
                             adapterLocales.remove(adapterLocales.getItem(i));
                             i=i-1;
-                            countCerveza=0;
                         }
+                        countCerveza=0;
                     }
 
                     adapterLocales.notifyDataSetChanged();
