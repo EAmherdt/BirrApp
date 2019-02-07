@@ -155,6 +155,17 @@ public class BuscarLocalesFragment extends Fragment {
                                     adapterEstilos.clear();
                                     adapterEstilos.add(e);
                                     arrayEstilos.addAll(CervezaRepositorio.LISTA_ESTILOS);
+                                    boolean flag=false;
+                                    for(int i=0;i<CervezaRepositorio.LISTA_CERVEZA.size();i++){
+                                        for(int j=0;j<arrayCervezas.size();j++){
+                                            if(arrayCervezas.get(j).getMarca().equals(CervezaRepositorio.LISTA_CERVEZA.get(i).getMarca())){
+                                                flag=true;
+                                            }
+                                        }if(flag==false){
+                                            arrayCervezas.add(CervezaRepositorio.LISTA_CERVEZA.get(i));
+                                        }
+                                        flag=false;
+                                    }
                                 }
                                 //si selecciono "seleccionar" y tengo un estilo seleccionado
                                 if(cerveza.equals(c) && !spEstilo.getSelectedItem().equals(e)){
@@ -210,6 +221,20 @@ public class BuscarLocalesFragment extends Fragment {
                                 if(estilo.equals(e) && spMarca.getSelectedItem().equals(c)){
                                     adapterCervezas.clear();
                                     adapterCervezas.add(c);
+                                    boolean flag=false;
+                                    for(int i=0;i<CervezaRepositorio.LISTA_CERVEZA.size();i++){
+                                        for(int j=0;j<arrayCervezas.size();j++){
+                                            if(arrayCervezas.get(j).getMarca().equals(CervezaRepositorio.LISTA_CERVEZA.get(i).getMarca())){
+                                                flag=true;
+                                            }
+                                        }if(flag==false){
+                                            arrayCervezas.add(CervezaRepositorio.LISTA_CERVEZA.get(i));
+                                        }
+                                        flag=false;
+                                    }
+                                }
+                                //si seleeciono "seleccionar" y tengo una marca seleccionada
+                                if(estilo.equals(e) && !spMarca.getSelectedItem().equals(c)){
                                     boolean flag=false;
                                     for(int i=0;i<CervezaRepositorio.LISTA_CERVEZA.size();i++){
                                         for(int j=0;j<arrayCervezas.size();j++){
@@ -313,6 +338,7 @@ public class BuscarLocalesFragment extends Fragment {
                         }
                         if (countCerveza != 1) {
                             adapterLocales.remove(adapterLocales.getItem(i));
+                            i=i-1;
                             countCerveza=0;
                         }
                     }

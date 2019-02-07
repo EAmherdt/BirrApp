@@ -287,7 +287,9 @@ public class AltaLocalFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-
+        if(requestCode==1){
+            arrayCervezas=(ArrayList<String>) data.getStringArrayListExtra("cervezas");
+        }
 //creo que nunca entra
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
