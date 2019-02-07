@@ -1,10 +1,16 @@
 package com.ripani.perren.amherdt.birrapp;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.widget.ArrayAdapter;
@@ -16,12 +22,16 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.ripani.perren.amherdt.birrapp.modelo.Cerveza;
 import com.ripani.perren.amherdt.birrapp.modelo.Local;
 import com.ripani.perren.amherdt.birrapp.modelo.LocalDao;
 import com.ripani.perren.amherdt.birrapp.modelo.MyDataBase;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,10 +57,10 @@ public class PerfilLocal extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.local_profile);
+
+
 
 
         ubicacion= (Button) findViewById(R.id.btnUbicacion);
@@ -90,6 +100,23 @@ public class PerfilLocal extends AppCompatActivity  {
 
         latitud = local.getLatitud().toString();
         longitud = local.getLongitud().toString();
+
+
+
+
+
+                ContextWrapper cw = new ContextWrapper(getBaseContext());
+                File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+                File mypath=new File(directory,idlocal+".jpg");
+
+
+                Bitmap bm = setImagen(mypath.toString());
+                if(bm!=null) {
+                    imagen.setImageBitmap(bm);
+                }
+
+
+
 
                 adapterCervezas = new ArrayAdapter(getBaseContext(), android.R.layout.simple_list_item_1, local.getCervezas());
                 listaCervezas.setAdapter(adapterCervezas);
@@ -147,6 +174,8 @@ public class PerfilLocal extends AppCompatActivity  {
 
 
 
+
+
         ubicacion.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -169,13 +198,18 @@ public class PerfilLocal extends AppCompatActivity  {
 
     }
 
-    @Override //BORRAR
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imagen.setImageBitmap(imageBitmap);
+    private Bitmap setImagen(String path){
+
+        Bitmap b = null;
+        try {
+            File file = new File(path);
+          b = BitmapFactory.decodeStream(new FileInputStream(file));
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
+
+        return b;
     }
 
 }

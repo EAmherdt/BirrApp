@@ -1,15 +1,22 @@
 package com.ripani.perren.amherdt.birrapp;
 
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -19,8 +26,16 @@ import com.ripani.perren.amherdt.birrapp.modelo.Local;
 import com.ripani.perren.amherdt.birrapp.modelo.LocalDao;
 import com.ripani.perren.amherdt.birrapp.modelo.MyDataBase;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -45,6 +60,8 @@ public class AltaLocalFragment extends Fragment {
 
     private OnNuevoLugarListener listenerLugar;
 
+
+
     private Button btnAñadirCervezas;
     private Button btnBuscarUbicacion;
     private Button btnImagen;
@@ -62,6 +79,10 @@ public class AltaLocalFragment extends Fragment {
     private LocalDao localDao;
     private CervezaRepositorio repositorio = new CervezaRepositorio();
     private long idLocal;
+    private String pathFoto;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_IMAGE_SAVE = 2;
+    Bitmap imageBitmap = null;
 
 
 
@@ -91,6 +112,9 @@ public class AltaLocalFragment extends Fragment {
         Thread t1 = new Thread(hiloActualizacion);
         t1.start();
 
+
+
+
         btnAñadirCervezas= (Button) v.findViewById(R.id.btnAñadirCervezas);
         btnCancelar= (Button) v.findViewById(R.id.btnCancelar);
         btnCrear= (Button) v.findViewById(R.id.btnCrear);
@@ -103,7 +127,9 @@ public class AltaLocalFragment extends Fragment {
         rbAdmite = (RadioButton) v.findViewById(R.id.rbAdmite);
         rbNoAdmite = (RadioButton) v.findViewById(R.id.rbNoAdmite);
         tvCoord= (TextView) v.findViewById(R.id.tvCoord);
-        Intent cameraIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+
+        etCapacidad.setText("10");
 
         String coordenadas = "0;0";
         if(getArguments()!=null) coordenadas = getArguments().getString("latLng","0;0");
@@ -120,14 +146,27 @@ public class AltaLocalFragment extends Fragment {
         btnImagen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(getActivity().getApplicationContext(), "com.ripani.perren.amherdt.birrapp.provider", photoFile);
+                        takePictureIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_SAVE);
+                    }
 
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Complete action using"), 1);
-
+                }
             }
         });
+
+
+
 
 
         btnAñadirCervezas.setOnClickListener(new View.OnClickListener() {
@@ -151,6 +190,8 @@ public class AltaLocalFragment extends Fragment {
         btnCrear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
 
                 local.setNombre(etNombreLocal.getText().toString());
                 local.setHoraApertura(etHoraApertura.getText().toString());
@@ -177,7 +218,13 @@ public class AltaLocalFragment extends Fragment {
                         if(local.getId()>0) localDao.update(local);
                         else {
                             idLocal = localDao.insert(local);
-                            System.out.println("IDLOCAL"+idLocal);
+
+                        }
+
+                        if (imageBitmap != null) {
+
+                            saveToInternalStorage(imageBitmap,idLocal);
+
                         }
 
 
@@ -189,7 +236,6 @@ public class AltaLocalFragment extends Fragment {
                     public void run() {
 
 
-                        System.out.println("IDLOCAL2" + idLocal);
                         Intent intentAceptado = new Intent(getActivity(), NotificationReceiver.class);
                         intentAceptado.putExtra("nombreLocal", local.getNombre());
                         intentAceptado.putExtra("idLocal", idLocal);
@@ -209,7 +255,7 @@ public class AltaLocalFragment extends Fragment {
                     return;
                 }
 
-                //El hilo de notificaciones se ejecuta despues de actualizar los dato, ya que
+                //El hilo de notificaciones se ejecuta despues de actualizar los datos, ya que
                 // habia problemas con pasar el id ya que el objeto no se habia creado aun.
 
                     Thread t2 = new Thread(hiloNotificacion);
@@ -231,11 +277,86 @@ public class AltaLocalFragment extends Fragment {
 
 
 
+
+
         return v;
     }
 
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+//creo que nunca entra
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            System.out.println("test");
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+           // local.setImagen(imageBitmap);
+
+
+        }
+
+        if (requestCode == REQUEST_IMAGE_SAVE && resultCode == RESULT_OK) {
+            File file = new File(pathFoto);
+
+            try {
+                imageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.fromFile(file));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (imageBitmap != null) {
+
+                //local.setImagen(imageBitmap);
+
+
+            }
+
+        }
+
+
+
+    }
+
+
+    private String saveToInternalStorage(Bitmap bitmapImage, long idlocal){
+        ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,idlocal+".jpg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return mypath.getAbsolutePath();
+    }
+
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        pathFoto = image.getAbsolutePath();
+        return image;
+    }
 
 
 

@@ -1,8 +1,11 @@
 package com.ripani.perren.amherdt.birrapp.modelo;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.graphics.Bitmap;
 import android.media.Image;
 
 import java.lang.reflect.Array;
@@ -20,6 +23,14 @@ public class Local {
 
     public void setCapacidad(int capacidad) {
         this.capacidad = capacidad;
+    }
+
+    public Bitmap getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(Bitmap imagen) {
+        this.imagen = imagen;
     }
 
     public enum Marca {;
@@ -61,6 +72,8 @@ public class Local {
     @TypeConverters({CervezaConverter.class})
     private List<Cerveza> cervezas;
     private Boolean reservas;
+    @Ignore
+    private Bitmap imagen;
 
 
     public long getId() {
