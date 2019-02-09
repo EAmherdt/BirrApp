@@ -47,9 +47,6 @@ public class AltaLocalFragment extends Fragment {
         public void obtenerCoordenadas();
 }
 
-    public interface OnImagenListener {
-        public void obtenerImagen();
-    }
 
 
     public void setListenerLugar(OnNuevoLugarListener listenerLugar) {
@@ -96,21 +93,14 @@ public class AltaLocalFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+
+
         View v = inflater.inflate(R.layout.fragment_alta_local, container, false);
 
         localDao = MyDataBase.getInstance(this.getActivity()).getLocalDao();
 
-        Runnable hiloActualizacion = new Runnable() {
-            @Override
-            public void run() {
-                List<Local> l = new ArrayList<Local>();
-                l = localDao.getAll();
-                System.out.println(l);
 
-            }
-        };
-        Thread t1 = new Thread(hiloActualizacion);
-        t1.start();
 
 
 
@@ -184,6 +174,7 @@ public class AltaLocalFragment extends Fragment {
             public void onClick(View view) {
                 getFragmentManager().beginTransaction().
                         remove(getFragmentManager().findFragmentById(R.id.contenedorFragmento)).commit();
+
             }
         });
 
@@ -267,6 +258,8 @@ public class AltaLocalFragment extends Fragment {
 
                 getFragmentManager().beginTransaction().
                         remove(getFragmentManager().findFragmentById(R.id.contenedorFragmento)).commit();
+                //lo agregue para ver si arregla el solapamiento
+
 
             }
         });
@@ -288,12 +281,17 @@ public class AltaLocalFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if(requestCode==1){
-            arrayCervezas=(ArrayList<String>) data.getStringArrayListExtra("cervezas");
+
+            if (data != null) {
+                arrayCervezas = (ArrayList<String>) data.getStringArrayListExtra("cervezas");
+            }
+
         }
-//creo que nunca entra
+
+
+        //creo que nunca entra
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            System.out.println("test");
             Bitmap imageBitmap = (Bitmap) extras.get("data");
            // local.setImagen(imageBitmap);
 

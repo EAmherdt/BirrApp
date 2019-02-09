@@ -106,10 +106,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.navAltaLocal) {
             //CargarFragmento(new AltaLocalFragment());
             fragment =  getSupportFragmentManager().findFragmentByTag(tag);
-            if(fragment==null) {
+            //if(fragment==null) {
                 fragment = new AltaLocalFragment();
                 ((AltaLocalFragment) fragment).setListenerLugar(MainActivity.this);
-            }
+            //}
             FragmentManager manager = getSupportFragmentManager();
             manager.beginTransaction().replace(R.id.contenedorFragmento, fragment, tag).commit();
            /* if(fragmentTransaction) {

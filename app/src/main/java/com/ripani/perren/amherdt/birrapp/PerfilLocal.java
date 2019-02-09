@@ -120,7 +120,6 @@ public class PerfilLocal extends AppCompatActivity  {
 
                 adapterCervezas = new ArrayAdapter(getBaseContext(), android.R.layout.simple_list_item_1, local.getCervezas());
                 listaCervezas.setAdapter(adapterCervezas);
-                System.out.println(listaCervezas.getAdapter().getCount());
 
             }
         };

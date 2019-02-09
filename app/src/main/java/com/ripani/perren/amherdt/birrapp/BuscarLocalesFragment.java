@@ -190,7 +190,7 @@ public class BuscarLocalesFragment extends Fragment {
                                         }
                                         spEstilo.setAdapter(adapterEstilos);
                                         spEstilo.setSelection(adapterEstilos.getPosition(estilo));
-                                        System.out.println("Estilo: "+estilo.getNombre()+" "+ adapterEstilos.getPosition(estilo));
+
 
                                 }
                             }
@@ -271,7 +271,7 @@ public class BuscarLocalesFragment extends Fragment {
                                         }
 
 
-                                        System.out.println("Cerveza: "+cerveza.getMarca()+" "+ adapterCervezas.getPosition(cerveza));
+
 
                                     }
                                     else{

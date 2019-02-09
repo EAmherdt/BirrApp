@@ -3,7 +3,6 @@ package com.ripani.perren.amherdt.birrapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -146,7 +145,6 @@ public class ListaCervezas extends AppCompatActivity {
 
             //intentResultado.putExtra("cerveza", (String) cerveza.getId().toString());
             intentResultado.putStringArrayListExtra("cervezas",arrayCervezas);
-            Log.d("TEST", "Eleccion: " + cerveza);
             setResult(1, intentResultado);
             finish();
         }
@@ -164,7 +162,6 @@ public class ListaCervezas extends AppCompatActivity {
 
             //intentResultado.putExtra("cerveza", (String) cerveza.getId().toString());
             intentResultado.putStringArrayListExtra("cervezas",arrayCancelar);
-            Log.d("TEST", "Eleccion: " + cerveza);
             setResult(1, intentResultado);
             finish();
         }

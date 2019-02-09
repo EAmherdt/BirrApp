@@ -1,8 +1,6 @@
 package com.ripani.perren.amherdt.birrapp.modelo;
 
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,7 +71,7 @@ public class EstiloRest {
                     data = isw.read();
                 }
                 //analizar los datos recibidos
-                Log.d("TP_FINAL", sb.toString());
+
             } else {
                 // lanzar excepcion o mostrar mensaje de error
                 // que no se pudo ejecutar la operacion
@@ -134,7 +132,7 @@ public class EstiloRest {
                     data = isw.read();
                 }
                 // ver datos recibidos
-                Log.d("TP_FINAL",sb.toString());
+
                 // Transformar respuesta a JSON
                 JSONTokener tokener = new JSONTokener(sb.toString());
                 JSONArray listaEstilo = (JSONArray) tokener.nextValue();
