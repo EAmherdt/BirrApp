@@ -381,7 +381,7 @@ public class BuscarLocalesFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                Local local = (Local) adapterView.getItemAtPosition(i);
                 Intent intent = new Intent(getActivity(),PerfilLocal.class);
-                intent.putExtra("idlocal", local.getId());
+                intent.putExtra("idLocal", local.getId());
                 startActivity(intent);
 
             }

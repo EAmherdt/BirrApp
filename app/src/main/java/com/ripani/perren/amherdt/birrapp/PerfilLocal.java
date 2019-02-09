@@ -91,7 +91,7 @@ public class PerfilLocal extends AppCompatActivity  {
 
 
         localDao = MyDataBase.getInstance(getBaseContext()).getLocalDao(); //ojo
-        long idlocal = getIntent().getExtras().getLong("idlocal");
+        long idlocal = getIntent().getExtras().getLong("idLocal");
         local = localDao.getById(idlocal);
         tvNombre.setText(local.getNombre());
         tvTel.setText("Teléfono: +54115689658");
