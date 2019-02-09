@@ -26,13 +26,11 @@
 
         <include layout="@layout/content_main" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/toolbarView"
-        android:id="@+id/contenedorFragmento" >
-
-    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbarView"
+            android:id="@+id/contenedorFragmento" />
 
     </RelativeLayout>
 

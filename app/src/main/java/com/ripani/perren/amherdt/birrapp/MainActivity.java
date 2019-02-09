@@ -123,13 +123,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } else if (id == R.id.navBuscarLocales) {
             CargarFragmento(new BuscarLocalesFragment());
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.home) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
 
-        } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.ajustes) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.contacto) {
 
         }
 
