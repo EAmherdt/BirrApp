@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ripani.perren.amherdt.birrapp.dao.CervezaRepositorio;
 import com.ripani.perren.amherdt.birrapp.modelo.Cerveza;
@@ -36,6 +37,7 @@ import java.util.Date;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static java.lang.Integer.parseInt;
 
 
 /**
@@ -181,17 +183,99 @@ public class AltaLocalFragment extends Fragment {
         btnCrear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(parseInt(etCapacidad.getText().toString())<1){
+                    Toast.makeText(getContext(),
+                            "La capacidad ingresada (" + etCapacidad.getText().toString() + ") es incorrecta",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(!etHoraApertura.getText().toString().contains(":") || etHoraApertura.getText().toString().split(":")[0].length()!=2 || etHoraApertura.getText().toString().split(":")[1].length()!=2){
+                    Toast.makeText(getContext(),
+                            "La hora de apertura debe ser ingresada de la forma HH:MM",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                String[] horaApertura = etHoraApertura.getText().toString().split(":");
+                int valorHoraA;
+                try {
+                    valorHoraA = Integer.valueOf(horaApertura[0]);
+                } catch (NumberFormatException excepcion) {
+                    Toast.makeText(getContext(),
+                            "La hora de apertura debe ser un número",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
 
+                int valorMinutoA;
+                try {
+                    valorMinutoA = Integer.valueOf(horaApertura[1]);
+                } catch (NumberFormatException excepcion) {
+                    Toast.makeText(getContext(),
+                            "Los minutos de apertura deben ser un números",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (valorHoraA < 0 || valorHoraA > 23) {
+                    Toast.makeText(getContext(),
+                            "La hora de apertura ingresada (" + valorHoraA + ") es incorrecta",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (valorMinutoA < 0 || valorMinutoA > 59) {
+                    Toast.makeText(getContext(),
+                            "Los minutos de apertura (" + valorMinutoA + ") son incorrectos",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if(!etHoraCierre.getText().toString().contains(":") || etHoraCierre.getText().toString().split(":")[0].length()!=2 || etHoraCierre.getText().toString().split(":")[1].length()!=2){
+                    Toast.makeText(getContext(),
+                            "La hora de cierre debe ser ingresada de la forma HH:MM",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                String[] horaCierre = etHoraCierre.getText().toString().split(":");
+                int valorHora;
+                try {
+                    valorHora = Integer.valueOf(horaCierre[0]);
+                } catch (NumberFormatException excepcion) {
+                    Toast.makeText(getContext(),
+                            "La hora de cierre debe ser un número",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                int valorMinuto;
+                try {
+                    valorMinuto = Integer.valueOf(horaCierre[1]);
+                } catch (NumberFormatException excepcion) {
+                    Toast.makeText(getContext(),
+                            "Los minutos de cierre deben ser un números",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (valorHora < 0 || valorHora > 23) {
+                    Toast.makeText(getContext(),
+                            "La hora de cierre ingresada (" + valorHora + ") es incorrecta",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (valorMinuto < 0 || valorMinuto > 59) {
+                    Toast.makeText(getContext(),
+                            "Los minutos de cierre (" + valorMinuto + ") son incorrectos",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
 
 
                 local.setNombre(etNombreLocal.getText().toString());
                 local.setHoraApertura(etHoraApertura.getText().toString());
                 local.setHoraCierre(etHoraCierre.getText().toString());
-                local.setCapacidad(Integer.parseInt(etCapacidad.getText().toString()));
+                local.setCapacidad(parseInt(etCapacidad.getText().toString()));
                 local.setReservas(rbAdmite.isChecked());//si reservas es 1 admite
                 List<Cerveza> listaCervezas = new ArrayList<Cerveza>();
                 for (String id : arrayCervezas) {
-                    listaCervezas.add(repositorio.buscarCervezaPorId(Integer.parseInt(id)));
+                    listaCervezas.add(repositorio.buscarCervezaPorId(parseInt(id)));
                 }
                 local.setCervezas(listaCervezas);
                 String coor= tvCoord.getText().toString();
