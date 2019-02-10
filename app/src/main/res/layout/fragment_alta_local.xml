@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:background="@color/white"
+    android:clickable="true"
     tools:context=".AltaLocalFragment">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

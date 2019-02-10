@@ -4,6 +4,7 @@ package com.ripani.perren.amherdt.birrapp;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -96,7 +97,7 @@ public class AltaLocalFragment extends Fragment {
 
 
         View v = inflater.inflate(R.layout.fragment_alta_local, container, false);
-
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         localDao = MyDataBase.getInstance(this.getActivity()).getLocalDao();
 
 
@@ -387,7 +388,7 @@ public class AltaLocalFragment extends Fragment {
             fos = new FileOutputStream(mypath);
 
 
-           // bitmapImage = rotateImage(bitmapImage, 90); si se saca modo retrato no deberia girarse, depende del disp.
+           bitmapImage = rotateImage(bitmapImage, 90);
 
             bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, fos);
         } catch (Exception e) {
