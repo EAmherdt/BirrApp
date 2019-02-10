@@ -4,7 +4,10 @@ package com.ripani.perren.amherdt.birrapp;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,8 +50,7 @@ public class AltaLocalFragment extends Fragment {
 
     public interface OnNuevoLugarListener {
         public void obtenerCoordenadas();
-}
-
+    }
 
 
     public void setListenerLugar(OnNuevoLugarListener listenerLugar) {
@@ -56,9 +58,7 @@ public class AltaLocalFragment extends Fragment {
     }
 
 
-
     private OnNuevoLugarListener listenerLugar;
-
 
 
     private Button btnAñadirCervezas;
@@ -79,9 +79,8 @@ public class AltaLocalFragment extends Fragment {
     private CervezaRepositorio repositorio = new CervezaRepositorio();
     private long idLocal;
     private String pathFoto;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_IMAGE_SAVE = 2;
-    Bitmap imageBitmap = null;
+    Bitmap imageBitmap = Bitmap.createBitmap(500, 800, Bitmap.Config.RGB_565);
 
 
 
@@ -90,12 +89,10 @@ public class AltaLocalFragment extends Fragment {
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
 
 
         View v = inflater.inflate(R.layout.fragment_alta_local, container, false);
@@ -103,28 +100,28 @@ public class AltaLocalFragment extends Fragment {
         localDao = MyDataBase.getInstance(this.getActivity()).getLocalDao();
 
 
+        btnAñadirCervezas =  v.findViewById(R.id.btnAñadirCervezas);
+        btnCancelar =  v.findViewById(R.id.btnCancelar);
+        btnCrear =  v.findViewById(R.id.btnCrear);
+        btnImagen =  v.findViewById(R.id.btnImagen);
+        btnBuscarUbicacion =  v.findViewById(R.id.btnBuscarUbicacion);
+        etNombreLocal =  v.findViewById(R.id.etNombreLocal);
+        etHoraApertura =  v.findViewById(R.id.etHoraApertura);
+        etHoraCierre =  v.findViewById(R.id.etHoraCierre);
+        etCapacidad =  v.findViewById(R.id.etCapacidad);
+        rbAdmite =  v.findViewById(R.id.rbAdmite);
+        rbNoAdmite =  v.findViewById(R.id.rbNoAdmite);
+        tvCoord =  v.findViewById(R.id.tvCoord);
 
 
-
-
-        btnAñadirCervezas= (Button) v.findViewById(R.id.btnAñadirCervezas);
-        btnCancelar= (Button) v.findViewById(R.id.btnCancelar);
-        btnCrear= (Button) v.findViewById(R.id.btnCrear);
-        btnImagen= (Button) v.findViewById(R.id.btnImagen);
-        btnBuscarUbicacion= (Button) v.findViewById(R.id.btnBuscarUbicacion);
-        etNombreLocal = (EditText) v.findViewById(R.id.etNombreLocal);
-        etHoraApertura = (EditText) v.findViewById(R.id.etHoraApertura);
-        etHoraCierre = (EditText) v.findViewById(R.id.etHoraCierre);
-        etCapacidad = (EditText) v.findViewById(R.id.etCapacidad);
-        rbAdmite = (RadioButton) v.findViewById(R.id.rbAdmite);
-        rbNoAdmite = (RadioButton) v.findViewById(R.id.rbNoAdmite);
-        tvCoord= (TextView) v.findViewById(R.id.tvCoord);
-
-
+        etNombreLocal.setText("test");
         etCapacidad.setText("10");
+        etHoraApertura.setText("10:30");
+        etHoraCierre.setText("19:30");
+
 
         String coordenadas = "0;0";
-        if(getArguments()!=null) coordenadas = getArguments().getString("latLng","0;0");
+        if (getArguments() != null) coordenadas = getArguments().getString("latLng", "0;0");
         tvCoord.setText(coordenadas);
 
         btnBuscarUbicacion.setOnClickListener(new View.OnClickListener() {
@@ -158,16 +155,13 @@ public class AltaLocalFragment extends Fragment {
         });
 
 
-
-
-
         btnAñadirCervezas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), ListaCervezas.class);
-                intent.putStringArrayListExtra("cerveza",arrayCervezas);
-                intent.putStringArrayListExtra("cervezaCancel",arrayCervezas);
-                startActivityForResult(intent,1);
+                intent.putStringArrayListExtra("cerveza", arrayCervezas);
+                intent.putStringArrayListExtra("cervezaCancel", arrayCervezas);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -183,13 +177,13 @@ public class AltaLocalFragment extends Fragment {
         btnCrear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(parseInt(etCapacidad.getText().toString())<1){
+                if (parseInt(etCapacidad.getText().toString()) < 1) {
                     Toast.makeText(getContext(),
                             "La capacidad ingresada (" + etCapacidad.getText().toString() + ") es incorrecta",
                             Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(!etHoraApertura.getText().toString().contains(":") || etHoraApertura.getText().toString().split(":")[0].length()!=2 || etHoraApertura.getText().toString().split(":")[1].length()!=2){
+                if (!etHoraApertura.getText().toString().contains(":") || etHoraApertura.getText().toString().split(":")[0].length() != 2 || etHoraApertura.getText().toString().split(":")[1].length() != 2) {
                     Toast.makeText(getContext(),
                             "La hora de apertura debe ser ingresada de la forma HH:MM",
                             Toast.LENGTH_LONG).show();
@@ -228,7 +222,7 @@ public class AltaLocalFragment extends Fragment {
                     return;
                 }
 
-                if(!etHoraCierre.getText().toString().contains(":") || etHoraCierre.getText().toString().split(":")[0].length()!=2 || etHoraCierre.getText().toString().split(":")[1].length()!=2){
+                if (!etHoraCierre.getText().toString().contains(":") || etHoraCierre.getText().toString().split(":")[0].length() != 2 || etHoraCierre.getText().toString().split(":")[1].length() != 2) {
                     Toast.makeText(getContext(),
                             "La hora de cierre debe ser ingresada de la forma HH:MM",
                             Toast.LENGTH_LONG).show();
@@ -268,6 +262,10 @@ public class AltaLocalFragment extends Fragment {
                 }
 
 
+
+
+
+
                 local.setNombre(etNombreLocal.getText().toString());
                 local.setHoraApertura(etHoraApertura.getText().toString());
                 local.setHoraCierre(etHoraCierre.getText().toString());
@@ -278,8 +276,10 @@ public class AltaLocalFragment extends Fragment {
                     listaCervezas.add(repositorio.buscarCervezaPorId(parseInt(id)));
                 }
                 local.setCervezas(listaCervezas);
-                String coor= tvCoord.getText().toString();
-                if(coor.length()>0 && coor.contains(";")) {
+
+
+                String coor = tvCoord.getText().toString();
+                if (coor.length() > 0 && coor.contains(";")) {
                     String[] coord = coor.split(";");
                     local.setLatitud(Double.valueOf(coord[0]));
                     local.setLongitud(Double.valueOf(coord[1]));
@@ -290,7 +290,7 @@ public class AltaLocalFragment extends Fragment {
                     @Override
                     public void run() {
 
-                        if(local.getId()>0) localDao.update(local);
+                        if (local.getId() > 0) localDao.update(local);
                         else {
                             idLocal = localDao.insert(local);
 
@@ -298,7 +298,7 @@ public class AltaLocalFragment extends Fragment {
 
                         if (imageBitmap != null) {
 
-                            saveToInternalStorage(imageBitmap,idLocal);
+                            saveToInternalStorage(imageBitmap, idLocal);
 
                         }
 
@@ -333,38 +333,26 @@ public class AltaLocalFragment extends Fragment {
                 //El hilo de notificaciones se ejecuta despues de actualizar los datos, ya que
                 // habia problemas con pasar el id ya que el objeto no se habia creado aun.
 
-                    Thread t2 = new Thread(hiloNotificacion);
+                Thread t2 = new Thread(hiloNotificacion);
                 t2.start();
-
-
-
 
 
                 getFragmentManager().beginTransaction().
                         remove(getFragmentManager().findFragmentById(R.id.contenedorFragmento)).commit();
-                //lo agregue para ver si arregla el solapamiento
 
 
             }
         });
 
 
-
-
-
-
-
-
-
         return v;
     }
-
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(requestCode==1){
+        if (requestCode == 1) {
 
             if (data != null) {
                 arrayCervezas = (ArrayList<String>) data.getStringArrayListExtra("cervezas");
@@ -373,14 +361,6 @@ public class AltaLocalFragment extends Fragment {
         }
 
 
-        //creo que nunca entra
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-           // local.setImagen(imageBitmap);
-
-
-        }
 
         if (requestCode == REQUEST_IMAGE_SAVE && resultCode == RESULT_OK) {
             File file = new File(pathFoto);
@@ -390,32 +370,26 @@ public class AltaLocalFragment extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (imageBitmap != null) {
-
-                //local.setImagen(imageBitmap);
-
-
-            }
 
         }
-
 
 
     }
 
 
-    private String saveToInternalStorage(Bitmap bitmapImage, long idlocal){
+    private String saveToInternalStorage(Bitmap bitmapImage, long idlocal) {
         ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        // Create imageDir
-        File mypath=new File(directory,idlocal+".jpg");
+        File mypath = new File(directory, idlocal + ".jpg");
 
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(mypath);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+
+
+           // bitmapImage = rotateImage(bitmapImage, 90); si se saca modo retrato no deberia girarse, depende del disp.
+
+            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, fos);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -442,6 +416,11 @@ public class AltaLocalFragment extends Fragment {
         return image;
     }
 
-
+public static Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
+    }
 
 }

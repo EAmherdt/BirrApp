@@ -15,46 +15,67 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-/*public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AltaLocalFragment.OnNuevoLugarListener {*/
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener,
-            AltaLocalFragment.OnNuevoLugarListener, MapaFragment.OnMapaListener{
-
+        AltaLocalFragment.OnNuevoLugarListener, MapaFragment.OnMapaListener {
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        ImageButton btnBuscar = findViewById(R.id.btnMainBuscar);
+        ImageButton btnAgregar = findViewById(R.id.btnMainAdd);
+        ImageButton btnBig = findViewById(R.id.btnMainBig);
         setSupportActionBar(toolbar);
         createNotificationChannel();
-
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 
+        btnBuscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                CargarFragmento(new BuscarLocalesFragment());
+            }
+        });
 
+        btnAgregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new AltaLocalFragment();
+                ((AltaLocalFragment) fragment).setListenerLugar(MainActivity.this);
+                FragmentManager manager = getSupportFragmentManager();
+                manager.beginTransaction().replace(R.id.contenedorFragmento, fragment, "nuevoReclamoFragment").commit();
 
+            }
+        });
+
+        btnBig.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getBaseContext(), "No implementado", Toast.LENGTH_LONG).show();
+            }
+        });
 
 
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -67,27 +88,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         shouldDisplayHomeUp();
     }
 
-    public void shouldDisplayHomeUp(){
-        //Enable Up button only  if there are entries in the back stack
-        boolean canback = getSupportFragmentManager().getBackStackEntryCount()>0;
+    public void shouldDisplayHomeUp() {
+        boolean canback = getSupportFragmentManager().getBackStackEntryCount() > 0;
         getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -100,25 +114,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        boolean fragmentTransaction = false;
-        Fragment fragment = null;
-        String tag = "nuevoReclamoFragment";
+
+
         if (id == R.id.navAltaLocal) {
-            //CargarFragmento(new AltaLocalFragment());
-            fragment =  getSupportFragmentManager().findFragmentByTag(tag);
-            //if(fragment==null) {
-                fragment = new AltaLocalFragment();
-                ((AltaLocalFragment) fragment).setListenerLugar(MainActivity.this);
-            //}
+            Fragment fragment = new AltaLocalFragment();
+            ((AltaLocalFragment) fragment).setListenerLugar(MainActivity.this);
             FragmentManager manager = getSupportFragmentManager();
-            manager.beginTransaction().replace(R.id.contenedorFragmento, fragment, tag).commit();
-           /* if(fragmentTransaction) {
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.contenedorFragmento, fragment,tag)
-                        .addToBackStack(null)
-                        .commit();
-            }*/
+            manager.beginTransaction().replace(R.id.contenedorFragmento, fragment, "nuevoReclamoFragment").commit();
 
 
         } else if (id == R.id.navBuscarLocales) {
@@ -129,23 +131,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         } else if (id == R.id.ajustes) {
-
+            Toast.makeText(getBaseContext(), "No implementado", Toast.LENGTH_LONG).show();
         } else if (id == R.id.contacto) {
+            Toast.makeText(getBaseContext(), "No implementado", Toast.LENGTH_LONG).show();
 
         }
 
 
-
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
 
 
     }
 
-    private void CargarFragmento(Fragment fragmento){
+    private void CargarFragmento(Fragment fragmento) {
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.contenedorFragmento, fragmento).commit();
     }
@@ -153,25 +153,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void coordenadasSeleccionadas(LatLng c) {
         String tag = "nuevoReclamoFragment";
-        Fragment fragment =  getSupportFragmentManager().findFragmentByTag(tag);
-        if(fragment==null) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (fragment == null) {
             fragment = new AltaLocalFragment();
             ((AltaLocalFragment) fragment).setListenerLugar(MainActivity.this);
         }
         Bundle bundle = new Bundle();
-        bundle.putString("latLng",c.latitude+";"+c.longitude);
+        bundle.putString("latLng", c.latitude + ";" + c.longitude);
         fragment.setArguments(bundle);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.contenedorFragmento, fragment,tag)
+                .replace(R.id.contenedorFragmento, fragment, tag)
                 .commit();
     }
 
     @Override
     public void obtenerCoordenadas() {
-        String tag="mapaReclamos";
+        String tag = "mapaReclamos";
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-        if(fragment==null) {
+        if (fragment == null) {
             fragment = new MapaFragment();
             ((MapaFragment) fragment).setListener(this);
         }
@@ -180,37 +180,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragment.setArguments(bundle);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.contenedorFragmento, fragment,tag)
+                .replace(R.id.contenedorFragmento, fragment, tag)
                 .addToBackStack(null)
                 .commit();
     }
 
 
-
-
-
-    public static void notificar(String nombre){
-
-    }
-
-
     private void createNotificationChannel() {
-        // Crear el canal de notificaciones pero solo para API 26 io superior
-        // dado que NotificationChannel es una clase nueva que no está incluida
-        // en las librerías de soporte qeu brindan compatibilidad hacía atrás
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.canal_estado_nombre);
             String description = getString(R.string.canal_estado_descr);
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel("CANAL01", name, importance);
             channel.setDescription(description);
-            // Registrar el canal en el sistema
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
-
-
 
 
 }

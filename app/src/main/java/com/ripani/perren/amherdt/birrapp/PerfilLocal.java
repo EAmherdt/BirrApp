@@ -35,7 +35,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PerfilLocal extends AppCompatActivity  {
+public class PerfilLocal extends AppCompatActivity {
 
 
     private Button ubicacion;
@@ -61,17 +61,14 @@ public class PerfilLocal extends AppCompatActivity  {
         setContentView(R.layout.local_profile);
 
 
-
-
-        ubicacion= (Button) findViewById(R.id.btnUbicacion);
-        reservar= (Button) findViewById(R.id.btnReservar);
-        tvNombre = (EditText) findViewById(R.id.nombre);
-        tvTel = (EditText) findViewById(R.id.numtel);
-        tvHoraInicio = (EditText) findViewById(R.id.horainicio);
-        tvHoraCierre = (EditText) findViewById(R.id.horacierre);
-        listaCervezas = (ListView) findViewById(R.id.listaCervezas);
+        ubicacion = findViewById(R.id.btnUbicacion);
+        reservar = findViewById(R.id.btnReservar);
+        tvNombre = findViewById(R.id.nombre);
+        tvTel = findViewById(R.id.numtel);
+        tvHoraInicio = findViewById(R.id.horainicio);
+        tvHoraCierre = findViewById(R.id.horacierre);
+        listaCervezas = findViewById(R.id.listaCervezas);
         imagen = findViewById(R.id.imgLocal);
-
 
 
         tvNombre.setEnabled(false);
@@ -84,38 +81,31 @@ public class PerfilLocal extends AppCompatActivity  {
         tvHoraCierre.setGravity(Gravity.CENTER_HORIZONTAL);
 
 
-
         Runnable dbthread = new Runnable() {
             @Override
             public void run() {
 
 
-        localDao = MyDataBase.getInstance(getBaseContext()).getLocalDao(); //ojo
-        long idlocal = getIntent().getExtras().getLong("idLocal");
-        local = localDao.getById(idlocal);
-        tvNombre.setText(local.getNombre());
-        tvTel.setText("Teléfono: +54115689658");
-        tvHoraInicio.setText("Apertura: " +local.getHoraApertura()+" hs");
-        tvHoraCierre.setText("Cierre: " +local.getHoraCierre()+" hs");
-
-        latitud = local.getLatitud().toString();
-        longitud = local.getLongitud().toString();
-
-
-
+                localDao = MyDataBase.getInstance(getBaseContext()).getLocalDao(); //ojo
+                long idlocal = getIntent().getExtras().getLong("idLocal");
+                local = localDao.getById(idlocal);
+                tvNombre.setText(local.getNombre());
+                tvTel.setText("Teléfono: +54115689658");
+                tvHoraInicio.setText("Apertura: " + local.getHoraApertura() + " hs");
+                tvHoraCierre.setText("Cierre: " + local.getHoraCierre() + " hs");
+                latitud = local.getLatitud().toString();
+                longitud = local.getLongitud().toString();
 
 
                 ContextWrapper cw = new ContextWrapper(getBaseContext());
                 File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-                File mypath=new File(directory,idlocal+".jpg");
+                File mypath = new File(directory, idlocal + ".jpg");
 
 
                 Bitmap bm = setImagen(mypath.toString());
-                if(bm!=null) {
+                if (bm != null) {
                     imagen.setImageBitmap(bm);
                 }
-
-
 
 
                 adapterCervezas = new ArrayAdapter(getBaseContext(), android.R.layout.simple_list_item_1, local.getCervezas());
@@ -138,21 +128,20 @@ public class PerfilLocal extends AppCompatActivity  {
         reservar.setEnabled(local.getReservas());
 
 
-
         reservar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-               int capacidadRestante = local.getCapacidad();
-                if(capacidadRestante>0){
-                    local.setCapacidad(capacidadRestante-1);
+                int capacidadRestante = local.getCapacidad();
+                if (capacidadRestante > 0) {
+                    local.setCapacidad(capacidadRestante - 1);
 
 
                     Runnable dbthread = new Runnable() {
                         @Override
                         public void run() {
 
-                    localDao.update(local);
+                            localDao.update(local);
 
                         }
                     };
@@ -162,31 +151,22 @@ public class PerfilLocal extends AppCompatActivity  {
 
                     Toast.makeText(getBaseContext(), "Reserva Registrada",
                             Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     Toast.makeText(getBaseContext(), "No hay lugar disponible",
                             Toast.LENGTH_LONG).show();
-            }
+                }
 
 
             }
         });
 
 
-
-
-
         ubicacion.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                        Uri gmmIntentUri = Uri.parse("google.navigation:q="+latitud+","+longitud+"100");
-
-
-// Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitud + "," + longitud + "100");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-// Make the Intent explicit by setting the Google Maps package
                 mapIntent.setPackage("com.google.android.apps.maps");
-
-// Attempt to start an activity that can handle the Intent
                 startActivity(mapIntent);
 
 
@@ -194,15 +174,14 @@ public class PerfilLocal extends AppCompatActivity  {
         });
 
 
-
     }
 
-    private Bitmap setImagen(String path){
+    private Bitmap setImagen(String path) {
 
         Bitmap b = null;
         try {
             File file = new File(path);
-          b = BitmapFactory.decodeStream(new FileInputStream(file));
+            b = BitmapFactory.decodeStream(new FileInputStream(file));
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

@@ -52,7 +52,7 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
 
     private List<Local> locales;
 
-    public MapaFragment(){
+    public MapaFragment() {
     }
 
     @Override
@@ -60,20 +60,16 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
             container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container,
                 savedInstanceState);
-        tipoMapa=1;
-        //Bundle argumentos = getArguments();
-       /* if(argumentos !=null) {
-            tipoMapa = argumentos.getInt("tipo_mapa",0);
-            idLocalSeleccionado = argumentos.getInt("idLocalSeleccionado",0);
-        }*/
+        tipoMapa = 1;
         getMapAsync(this);
         return rootView;
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         miMapa = googleMap;
         actualizarMapa();
-        switch (tipoMapa){
+        switch (tipoMapa) {
             case 1:
                 miMapa.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                     @Override
@@ -93,27 +89,27 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         }
     }
 
-    private void cargarMapaLocalSeleccionado(final int idLocal){
+    private void cargarMapaLocalSeleccionado(final int idLocal) {
 
         //localDao = MyDatabase.getInstance(getContext()).getReclamoDao();
 
         Runnable r = new Runnable() {
-                @Override
-                public void run() {
+            @Override
+            public void run() {
                 final Local local = localDao.getById(idLocal);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         LatLngBounds.Builder builder = new LatLngBounds.Builder();
                         Marker marker = miMapa.addMarker(new MarkerOptions()
-                                .position(new LatLng(local.getLatitud(),local.getLongitud()))
+                                .position(new LatLng(local.getLatitud(), local.getLongitud()))
                                 .title(local.getId() + "[" + local.getNombre().toString() + "]"));
                         CameraPosition cameraPosition = new CameraPosition.Builder()
-                                .target(new LatLng(local.getLatitud(),local.getLongitud()))
+                                .target(new LatLng(local.getLatitud(), local.getLongitud()))
                                 .zoom(15)
                                 .build();
                         CircleOptions circleOptions = new CircleOptions()
-                                .center(new LatLng(local.getLatitud(),local.getLongitud()))
+                                .center(new LatLng(local.getLatitud(), local.getLongitud()))
                                 .radius(500)
                                 .strokeColor(Color.RED)
                                 .fillColor(0x5500ff00)
@@ -128,7 +124,7 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
         t.start();
     }
 
-    private void cargarMapaConTodosLocales(){
+    private void cargarMapaConTodosLocales() {
 
         //localDao = MyDatabase.getInstance(getContext()).getReclamoDao();
 
@@ -140,9 +136,9 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
                     @Override
                     public void run() {
                         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                        for(Local l : locales){
+                        for (Local l : locales) {
                             Marker marker = miMapa.addMarker(new MarkerOptions()
-                                    .position(new LatLng(l.getLatitud(),l.getLongitud()))
+                                    .position(new LatLng(l.getLatitud(), l.getLongitud()))
                                     .title(l.getId() + "[" + l.getNombre().toString() + "]"));
                             builder.include(marker.getPosition());
                         }
@@ -157,7 +153,7 @@ public class MapaFragment extends SupportMapFragment implements OnMapReadyCallba
     }
 
     private void actualizarMapa() {
-        if (ActivityCompat.checkSelfPermission(this.getContext(),Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {

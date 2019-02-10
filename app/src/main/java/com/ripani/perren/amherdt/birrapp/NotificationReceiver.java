@@ -15,26 +15,19 @@ import com.ripani.perren.amherdt.birrapp.modelo.MyDataBase;
 public class NotificationReceiver extends BroadcastReceiver {
 
 
-
     public void onReceive(Context context, Intent intent) {
 
 
         Bundle b = intent.getExtras();
         long idLocal = (long) b.get("idLocal");
         String nombreLocal = (String) b.get("nombreLocal");
-
-        //deberia ir al perfil del local
         Intent destino = new Intent(context, PerfilLocal.class);
         destino.putExtra("idLocal", idLocal);
-        //deberia ir al perfil del local
 
 
         destino.putExtra("idLocal", idLocal);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(context, 99, destino, PendingIntent.FLAG_UPDATE_CURRENT);
-
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 99, destino, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
         Notification notification = new NotificationCompat.Builder(context, "CANAL01")

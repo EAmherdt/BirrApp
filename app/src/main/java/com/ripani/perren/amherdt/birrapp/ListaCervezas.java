@@ -33,9 +33,7 @@ public class ListaCervezas extends AppCompatActivity {
     private Button cancelar;
     private Cerveza cerveza;
     private ArrayList<String> arrayCervezas = new ArrayList<>();
-    private ArrayList<String> arrayCancelar= new ArrayList<String>();
-    static Estilo[] estilos;
-    static Cerveza[] cervezas;
+    private ArrayList<String> arrayCancelar = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +44,7 @@ public class ListaCervezas extends AppCompatActivity {
         spinner = findViewById(R.id.spinnerCategoria);
         aceptar = findViewById(R.id.btnAceptar);
         cancelar = findViewById(R.id.btnCancelar);
-        //adapterEstilos = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, repositorio.getEstilos());
         adapterCervezas = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice);
-        //adapterEstilos.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapterEstilos);
         listaCervezas = findViewById(R.id.listaProductos);
         tvProducto = findViewById(R.id.productos);
@@ -58,18 +54,17 @@ public class ListaCervezas extends AppCompatActivity {
 
 
         Bundle intent = this.getIntent().getExtras();
-        arrayCervezas=intent.getStringArrayList("cerveza");
-        arrayCancelar=intent.getStringArrayList("cervezaCancel");
-
+        arrayCervezas = intent.getStringArrayList("cerveza");
+        arrayCancelar = intent.getStringArrayList("cervezaCancel");
 
 
         listaCervezas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 cerveza = (Cerveza) adapterView.getItemAtPosition(i);
-                if(listaCervezas.isItemChecked(i)){
+                if (listaCervezas.isItemChecked(i)) {
                     arrayCervezas.add(cerveza.getId().toString());
-                }else{
+                } else {
                     arrayCervezas.remove(cerveza.getId().toString());
                 }
             }
@@ -109,12 +104,14 @@ public class ListaCervezas extends AppCompatActivity {
 
                                 listaCervezas.setAdapter(adapterCervezas);
 
-                                for(int i=0;i<adapterCervezas.getCount();i++){
-                                    if(arrayCervezas!=null){
-                                    if(arrayCervezas.contains(adapterCervezas.getItem(i).getId().toString())){
-                                        listaCervezas.setItemChecked(i,true);
+                                for (int i = 0; i < adapterCervezas.getCount(); i++) {
+                                    if (arrayCervezas != null) {
+                                        if (arrayCervezas.contains(adapterCervezas.getItem(i).getId().toString())) {
+                                            listaCervezas.setItemChecked(i, true);
+                                        }
+                                    } else {
+                                        arrayCervezas = new ArrayList<>();
                                     }
-                                    }else{ arrayCervezas = new ArrayList<>();}
                                 }
 
                             }
@@ -138,13 +135,7 @@ public class ListaCervezas extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent intentResultado = new Intent();
-
-                /*Toast.makeText(ListaCervezas.this,
-                        "Cervezas agregadas con éxito",
-                        Toast.LENGTH_LONG).show();*/
-
-            //intentResultado.putExtra("cerveza", (String) cerveza.getId().toString());
-            intentResultado.putStringArrayListExtra("cervezas",arrayCervezas);
+            intentResultado.putStringArrayListExtra("cervezas", arrayCervezas);
             setResult(1, intentResultado);
             finish();
         }
@@ -154,14 +145,7 @@ public class ListaCervezas extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent intentResultado = new Intent();
-
-                /*Toast.makeText(ListaCervezas.this,
-                        "Cervezas agregadas con éxito",
-                        Toast.LENGTH_LONG).show();*/
-
-
-            //intentResultado.putExtra("cerveza", (String) cerveza.getId().toString());
-            intentResultado.putStringArrayListExtra("cervezas",arrayCancelar);
+            intentResultado.putStringArrayListExtra("cervezas", arrayCancelar);
             setResult(1, intentResultado);
             finish();
         }
