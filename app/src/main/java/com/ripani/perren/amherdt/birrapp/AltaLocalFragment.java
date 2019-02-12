@@ -507,12 +507,12 @@ public class AltaLocalFragment extends Fragment {
             return false;
         }
 
-       /* if(arrayCervezas.isEmpty()){
+        if(arrayCervezas.isEmpty()){
             Toast.makeText(getContext(),
                     "No ha añadido ninguna cerveza",
                     Toast.LENGTH_LONG).show();
             return false;
-        }*/
+        }
 
 
         return true;
