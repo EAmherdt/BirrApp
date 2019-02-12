@@ -33,7 +33,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         Notification notification = new NotificationCompat.Builder(context, "CANAL01")
 
-                
+
                 .setContentTitle("Tu local ha sido creado")
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentIntent(pendingIntent)

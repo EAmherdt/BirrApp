@@ -33,7 +33,8 @@ public class Local {
         this.imagen = imagen;
     }
 
-    public enum Marca {;
+    public enum Marca {
+        ;
 
 
         private String nombreMarca;
@@ -47,16 +48,18 @@ public class Local {
             return estilos;
         }
 
-        private Marca (String nombreMarca, List<Estilo> estilos){
+        private Marca(String nombreMarca, List<Estilo> estilos) {
             this.nombreMarca = nombreMarca;
             this.estilos = estilos;
         }
     }
-    public enum Estilo {;
+
+    public enum Estilo {
+        ;
 
         private String nombreMarca;
 
-        private Estilo (String nombreEstilo){
+        private Estilo(String nombreEstilo) {
             this.nombreMarca = nombreEstilo;
         }
     }
@@ -69,6 +72,7 @@ public class Local {
     private Double latitud;
     private Double longitud;
     private int capacidad;
+    private String telefono;
     @TypeConverters({CervezaConverter.class})
     private List<Cerveza> cervezas;
     private Boolean reservas;
@@ -138,6 +142,11 @@ public class Local {
 
     public void setCervezas(List<Cerveza> cervezas) {
         this.cervezas = cervezas;
+    }
+
+    public String getTelefono() { return telefono; }
+
+    public void setTelefono(String telefono) { this.telefono = telefono;
     }
 
     @Override

@@ -44,6 +44,7 @@ public class PerfilLocal extends AppCompatActivity {
     private EditText tvTel;
     private EditText tvHoraInicio;
     private EditText tvHoraCierre;
+    private EditText cantidad;
     private ImageView imagen;
     private ListView listaCervezas;
     private Local local;
@@ -69,6 +70,7 @@ public class PerfilLocal extends AppCompatActivity {
         tvHoraCierre = findViewById(R.id.horacierre);
         listaCervezas = findViewById(R.id.listaCervezas);
         imagen = findViewById(R.id.imgLocal);
+        cantidad = findViewById(R.id.cantreserva);
 
 
         tvNombre.setEnabled(false);
@@ -79,6 +81,7 @@ public class PerfilLocal extends AppCompatActivity {
         tvHoraInicio.setGravity(Gravity.CENTER_HORIZONTAL);
         tvHoraCierre.setEnabled(false);
         tvHoraCierre.setGravity(Gravity.CENTER_HORIZONTAL);
+        cantidad.setText("1");
 
 
         Runnable dbthread = new Runnable() {
@@ -90,7 +93,14 @@ public class PerfilLocal extends AppCompatActivity {
                 long idlocal = getIntent().getExtras().getLong("idLocal");
                 local = localDao.getById(idlocal);
                 tvNombre.setText(local.getNombre());
-                tvTel.setText("Teléfono: +54115689658");
+
+
+                if (local.getTelefono().equals("")) {
+                    tvTel.setText("No hay teléfono");
+                } else {
+                    tvTel.setText(local.getTelefono());
+                }
+
                 tvHoraInicio.setText("Apertura: " + local.getHoraApertura() + " hs");
                 tvHoraCierre.setText("Cierre: " + local.getHoraCierre() + " hs");
                 latitud = local.getLatitud().toString();
@@ -125,6 +135,10 @@ public class PerfilLocal extends AppCompatActivity {
             return;
         }
 
+
+        if (latitud.equals("0.0") && longitud.equals("0.0")) {
+            ubicacion.setEnabled(false);
+        }
         reservar.setEnabled(local.getReservas());
 
 
@@ -132,31 +146,41 @@ public class PerfilLocal extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+
                 int capacidadRestante = local.getCapacidad();
-                if (capacidadRestante > 0) {
-                    local.setCapacidad(capacidadRestante - 1);
+                int reserva = Integer.parseInt(cantidad.getText().toString());
+
+                if (reserva > 0) {
 
 
-                    Runnable dbthread = new Runnable() {
-                        @Override
-                        public void run() {
+                    if (capacidadRestante >= reserva) {
+                        local.setCapacidad(capacidadRestante - reserva);
 
-                            localDao.update(local);
 
-                        }
-                    };
+                        Runnable dbthread = new Runnable() {
+                            @Override
+                            public void run() {
 
-                    Thread t1 = new Thread(dbthread);
-                    t1.start();
+                                localDao.update(local);
 
-                    Toast.makeText(getBaseContext(), "Reserva Registrada",
-                            Toast.LENGTH_LONG).show();
+                            }
+                        };
+
+                        Thread t1 = new Thread(dbthread);
+                        t1.start();
+
+                        Toast.makeText(getBaseContext(), "Reserva Registrada",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getBaseContext(), "No hay lugar disponible",
+                                Toast.LENGTH_LONG).show();
+                    }
+
                 } else {
-                    Toast.makeText(getBaseContext(), "No hay lugar disponible",
+
+                    Toast.makeText(getBaseContext(), "Cantidad de personas es incorrecta",
                             Toast.LENGTH_LONG).show();
                 }
-
-
             }
         });
 

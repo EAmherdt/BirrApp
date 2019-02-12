@@ -305,9 +305,13 @@ public class BuscarLocalesFragment extends Fragment {
         btnBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 final String cadena= nombreLocal.getText().toString();
+
                 adapterLocales.clear();
-                int countCerveza=0;
+
+                int countCerveza = 0;
+
                 Cerveza cerveza = new Cerveza();
                 cerveza.setMarca(((Cerveza) spMarca.getSelectedItem()).getMarca());
                 cerveza.setEstilo(((Estilo) spEstilo.getSelectedItem()));
@@ -322,8 +326,11 @@ public class BuscarLocalesFragment extends Fragment {
                     };
                     Thread t1 = new Thread(hiloActualizacion);
                     t1.start();
+
                     while(t1.isAlive());
+
                     adapterLocales.addAll(listaLocales);
+
                     for(int i=0;i < adapterLocales.getCount(); i++) {
                         List<Cerveza> listaCervezas = adapterLocales.getItem(i).getCervezas();
                         for (int j = 0; j < listaCervezas.size(); j++) {
@@ -349,14 +356,12 @@ public class BuscarLocalesFragment extends Fragment {
 
                     adapterLocales.notifyDataSetChanged();
                     lvLocales.setAdapter(adapterLocales);
-
             }
         });
 
 
 
-
-                spMarca.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spMarca.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 

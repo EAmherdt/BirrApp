@@ -9,16 +9,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="82dp">
 
         <ImageView
             android:id="@+id/imgLocal"
             android:layout_width="match_parent"
             android:layout_height="125dp"
+            android:paddingTop="5dp"
             app:srcCompat="@mipmap/ic_launcher"
             tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="0dp"
-            android:paddingTop="5dp" />
+            tools:layout_editor_absoluteY="0dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,11 +33,13 @@
                 android:id="@+id/nombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold|italic"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:singleLine="true"
-                android:text="nombre" />
+                android:text="nombre"
+                android:textColor="@color/camposperfil"
+                android:textSize="27sp"
+                android:textStyle="bold|italic" />
 
             <EditText
                 android:id="@+id/numtel"
@@ -43,7 +47,8 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="phone"
-                android:text="tel" />
+                android:text="tel"
+                android:textColor="@color/camposperfil" />
 
             <EditText
                 android:id="@+id/horainicio"
@@ -51,7 +56,8 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="hora inicio" />
+                android:text="hora inicio"
+                android:textColor="@color/camposperfil" />
 
             <EditText
                 android:id="@+id/horacierre"
@@ -59,7 +65,8 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="hora cierre" />
+                android:text="hora cierre"
+                android:textColor="@color/camposperfil" />
 
             <Button
                 android:id="@+id/btnUbicacion"
@@ -71,8 +78,9 @@
                 android:id="@+id/listaCervezas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_above="@+id/btnReservar"/>
+                android:layout_above="@+id/btnReservar"
+                android:layout_weight="1" />
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -80,13 +88,35 @@
                 android:gravity="bottom"
                 android:orientation="vertical">
 
+
+                <TextView
+                    android:id="@+id/tvReserva"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cantidad de personas" />
+
+
+
+                <EditText
+                    android:id="@+id/cantreserva"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:text="0" />
+
                 <Button
                     android:id="@+id/btnReservar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_alignParentBottom="true"
+                    android:layout_weight="1"
                     android:text="Reservar" />
+
+
+
+
             </LinearLayout>
 
         </LinearLayout>
