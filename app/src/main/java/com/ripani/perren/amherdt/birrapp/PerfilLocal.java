@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -33,6 +34,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PerfilLocal extends AppCompatActivity {
@@ -118,8 +120,26 @@ public class PerfilLocal extends AppCompatActivity {
                 }
 
 
-                adapterCervezas = new ArrayAdapter(getBaseContext(), android.R.layout.simple_list_item_1, local.getCervezas());
-                listaCervezas.setAdapter(adapterCervezas);
+                List<HashMap<String, String>> aList = new ArrayList<HashMap<String, String>>();
+
+                for (int i = 0; i < local.getCervezas().size(); i++) {
+                    HashMap<String, String> hm = new HashMap<String, String>();
+                    hm.put("marca", local.getCervezas().get(i).getMarca());
+                    hm.put("estilo", local.getCervezas().get(i).getEstilo().getNombre());
+                    aList.add(hm);
+                }
+
+                String[] from = {"marca", "estilo"};
+                int[] to = {R.id.marca, R.id.estilo};
+
+                SimpleAdapter simpleAdapter = new SimpleAdapter(getBaseContext(), aList, R.layout.listview_perfil, from, to);
+
+                listaCervezas.setAdapter(simpleAdapter);
+
+
+
+
+
 
             }
         };

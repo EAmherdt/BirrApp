@@ -123,6 +123,14 @@ public class AltaLocalFragment extends Fragment {
 
 
         coordenadas = "0;0";
+
+
+        etNombreLocal.setText("test");
+        etCapacidad.setText("10");
+        etHoraApertura.setText("10:30");
+        etHoraCierre.setText("19:30");
+
+
         if (getArguments() != null) coordenadas = getArguments().getString("latLng", "0;0");
 
         btnBuscarUbicacion.setOnClickListener(new View.OnClickListener() {
@@ -499,12 +507,12 @@ public class AltaLocalFragment extends Fragment {
             return false;
         }
 
-        if(arrayCervezas.isEmpty()){
+       /* if(arrayCervezas.isEmpty()){
             Toast.makeText(getContext(),
                     "No ha añadido ninguna cerveza",
                     Toast.LENGTH_LONG).show();
             return false;
-        }
+        }*/
 
 
         return true;
